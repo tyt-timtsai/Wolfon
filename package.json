@@ -1,0 +1,35 @@
+{
+  "name": "wolfon",
+  "version": "1.0.0",
+  "description": "Personal project | 2022 September",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tyt-timtsai/Wolfon.git"
+  },
+  "keywords": [
+    "Live streaming",
+    "Learn Programming"
+  ],
+  "author": "Tim Tsai",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tyt-timtsai/Wolfon/issues"
+  },
+  "homepage": "https://github.com/tyt-timtsai/Wolfon#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.23.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-react": "^7.31.1",
+    "eslint-plugin-react-hooks": "^4.6.0"
+  }
+}
