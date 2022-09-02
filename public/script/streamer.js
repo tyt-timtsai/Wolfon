@@ -17,8 +17,8 @@ const room = 'room1';
  * */
 function connectIO() {
   // socket
-  // socket = io('ws://localhost:3000');
-  socket = io('wss://timtsai.website');
+  socket = io('ws://localhost:3000');
+  // socket = io('wss://timtsai.website');
 
   socket.on('ice_candidate', async (data, id) => {
     console.log('收到 ice_candidate');

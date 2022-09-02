@@ -5,9 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Wolfon</title>
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
-
     <div>
       <button id="startBtn">直播 | 分享螢幕</button>
       <button id="screenshot-button"> 直播畫面截圖 </button>
@@ -18,13 +18,30 @@
     </div>
 
     <div>
+      <select name="language" id="language">
+          <option value="javascript" selected>Javascript</option>
+          <option value="python">Python</option>
+          <option value="golang">Golang</option>
+      </select>
+      <input type="text" name="text" id="search">
+      <button id="search-btn">Search</button>
+      <button id="run-btn">Run</button>
+    </div>
+
+    <div id="editor">console.log('Hello Javascript!');</div>
+    <div id="terminal"></div>
+
+    <div>
       <canvas></canvas>
       <!-- 也能將canvas轉成image data -->
       <img id="screenshot-img" src="">
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.9.6/ace.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="../script/streamer.js"></script>
+    <script src="../script/compiler.js"></script>
   </body>
 </html>

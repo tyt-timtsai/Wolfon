@@ -63,8 +63,10 @@ app.use((req, res, next) => {
 });
 
 const liveRoute = require('./routes/live');
+const codeRoute = require('./routes/code');
 
-app.use(`/api/${API_VERSION}/live`, liveRoute);
+app.use(`/api/${API_VERSION}/live`, [liveRoute]);
+app.use(`/api/${API_VERSION}/code`, [codeRoute]);
 
 // Page not found
 app.use((req, res, next) => {
