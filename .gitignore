@@ -17,5 +17,5 @@ node_modules/
 .env.test
 
 # public code folder
-
+public/code/
 
