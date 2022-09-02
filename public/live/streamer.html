@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wolfon</title>
+  </head>
+  <body>
+
+    <div>
+      <button id="startBtn">直播 | 分享螢幕</button>
+      <button id="screenshot-button"> 直播畫面截圖 </button>
+    </div>
+
+    <div>
+      <video muted width="800px" autoplay playsinline id="localVideo"></video>
+    </div>
+
+    <div>
+      <canvas></canvas>
+      <!-- 也能將canvas轉成image data -->
+      <img id="screenshot-img" src="">
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="../script/streamer.js"></script>
+  </body>
+</html>
