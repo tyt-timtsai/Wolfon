@@ -39,7 +39,7 @@ async function compile(req, res) {
     await fsPromises.rm(`./code/${id}/code.${extension}`);
     await fsPromises.rmdir(`./code/${id}`);
 
-    console.log('end');
+    console.log('Compile finished.');
   } catch (error) {
     console.log(error.stdout);
     if (error.stdout && error.stderr) {
@@ -52,8 +52,6 @@ async function compile(req, res) {
 }
 
 async function getVersion(req, res) {
-  console.log(req.params.id); // 直播地址
-  console.log(req.query.tag); // tag : 版本號
   if (req.query.tag) {
     const result = await codes.findOne(
       {
@@ -66,16 +64,12 @@ async function getVersion(req, res) {
     console.log(result);
     return res.send(result);
   }
-  console.log('get all');
+  console.log('Get all versions');
   const result = await codes.find({ address: req.params.id }, { projection: { _id: 0 } }).toArray();
-  console.log(result);
   return res.send(result);
 }
 
 async function addVersion(req, res) {
-  console.log(req.params.id); // 直播地址
-  console.log(req.body.tag); // tag : 版本號
-  console.log(req.body.code); // code
   const { tag, code } = req.body;
   const result = await codes.insertOne({ address: req.params.id, tag, code });
   res.send(result);

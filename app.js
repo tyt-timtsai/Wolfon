@@ -28,8 +28,8 @@ io.on('connection', (socket) => {
   socket.on('join', (room) => {
     userRoom = room;
     socket.join(room);
+    socket.to(room).emit('viewer', socket.id);
   });
-
   // Transport Offer
   socket.on('offer', (room, desc) => {
     socket.to(room).emit('offer', desc, socket.id);
@@ -48,6 +48,16 @@ io.on('connection', (socket) => {
   // Version Control
   socket.on('addTag', (tag) => {
     io.emit('addTag', tag);
+  });
+
+  // Get Viewer code
+  socket.on('getCode', (viewer, streamer) => {
+    console.log('server get code');
+    io.to(viewer).emit('getCode', streamer);
+  });
+  socket.on('passCode', (code) => {
+    console.log('server pass code');
+    io.emit('passCode', code);
   });
 
   // Disconnect

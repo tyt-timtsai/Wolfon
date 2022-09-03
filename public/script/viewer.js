@@ -152,10 +152,7 @@ language.addEventListener('change', () => {
 });
 
 // ============== 程式編譯 ==============
-// 測試用直播地址
-const address = 'a001';
-
-axios.get(`/api/v1/code/${address}`)
+axios.get(`/api/v1/code/${room}`)
   .then((res) => {
     console.log(res);
     res.data.forEach((data) => {
@@ -173,6 +170,15 @@ socket.on('addTag', (versionTag) => {
   option.value = versionTag;
   option.innerText = versionTag;
   version.appendChild(option);
+});
+
+socket.on('getCode', (id) => {
+  console.log('viewer get code');
+  console.log(id);
+  const code = editor.getValue();
+  console.log(code);
+
+  socket.emit('passCode', code);
 });
 
 searchBtn.addEventListener('click', () => {
@@ -198,7 +204,7 @@ version.addEventListener('change', () => {
   const versionTag = version.value;
   console.log(tag);
   // code 在 string 還保有 \n
-  axios.get(`/api/v1/code/${address}?tag=${versionTag}`)
+  axios.get(`/api/v1/code/${room}?tag=${versionTag}`)
     .then((res) => {
       console.log(res);
       editor.setValue(JSON.parse(res.data.code));
