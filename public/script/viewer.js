@@ -13,7 +13,8 @@ const tag = document.getElementById('tag');
 const version = document.getElementById('version');
 
 let peerConn;
-let socket;
+// let socket;
+const socket = io('ws://localhost:3000');
 
 const room = 'room1';
 
@@ -23,7 +24,7 @@ const room = 'room1';
  */
 function connectIO() {
   // socket
-  socket = io('ws://localhost:3000');
+  // socket = io('ws://localhost:3000');
   // socket = io('wss://timtsai.website');
 
   socket.on('ice_candidate', async (data) => {
@@ -167,6 +168,13 @@ axios.get(`/api/v1/code/${address}`)
   .catch(((err) => console.log(err)));
 
 // =============== 監聽事件 ================
+socket.on('addTag', (versionTag) => {
+  const option = document.createElement('option');
+  option.value = versionTag;
+  option.innerText = versionTag;
+  version.appendChild(option);
+});
+
 searchBtn.addEventListener('click', () => {
   editor.find(search.value);
 });
