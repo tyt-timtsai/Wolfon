@@ -16,11 +16,12 @@ const tag = document.getElementById('tag');
 const tagBtn = document.getElementById('tagBtn');
 const version = document.getElementById('version');
 
+const viewers = document.getElementById('viewers');
+
 let localStream;
 const PCs = {};
 // let socket;
 const socket = io('ws://localhost:3000');
-
 const room = 'room1';
 
 // ===================== 連線相關 =====================
@@ -194,10 +195,7 @@ language.addEventListener('change', () => {
 });
 
 // ============== 程式編譯 ==============
-// 測試用直播地址
-const address = 'a001';
-
-axios.get(`/api/v1/code/${address}`)
+axios.get(`/api/v1/code/${room}`)
   .then((res) => {
     console.log(res);
     res.data.forEach((data) => {
@@ -232,7 +230,7 @@ runBtn.addEventListener('click', () => {
 tagBtn.addEventListener('click', () => {
   const code = editor.getValue();
   if (tag.value && code) {
-    axios.post(`/api/v1/code/${address}`, {
+    axios.post(`/api/v1/code/${room}`, {
       tag: tag.value,
       code: JSON.stringify(code),
     })
@@ -248,6 +246,29 @@ tagBtn.addEventListener('click', () => {
   }
 });
 
+// function getViewerCode() {
+//   console.log('get');
+//   socket.to().emit('message', 'for your eyes only');
+// }
+
+socket.on('viewer', (id) => {
+  console.log(id);
+  const viewerBtn = document.createElement('button');
+  viewerBtn.innerText = id;
+  viewerBtn.value = id;
+  viewerBtn.onclick = function getViewerCode() {
+    console.log(id);
+    socket.emit('getCode', id, socket.id);
+  };
+  viewers.appendChild(viewerBtn);
+});
+
+socket.on('passCode', (code) => {
+  console.log('getlassasasasa');
+  console.log(code);
+  editor.setValue(code);
+});
+
 socket.on('addTag', (versionTag) => {
   const option = document.createElement('option');
   option.value = versionTag;
@@ -260,7 +281,7 @@ version.addEventListener('change', () => {
   const versionTag = version.value;
   console.log(tag);
   // code 在 string 還保有 \n
-  axios.get(`/api/v1/code/${address}?tag=${versionTag}`)
+  axios.get(`/api/v1/code/${room}?tag=${versionTag}`)
     .then((res) => {
       console.log(res);
       editor.setValue(JSON.parse(res.data.code));
