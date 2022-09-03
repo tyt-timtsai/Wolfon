@@ -60,6 +60,11 @@ io.on('connection', (socket) => {
     io.emit('passCode', code);
   });
 
+  // chat room
+  socket.on('chat message', (msg) => {
+    io.emit('chat message', msg);
+  });
+
   // Disconnect
   socket.on('disconnect', () => {
     console.log(userRoom, socket.id, 'disconnect');
