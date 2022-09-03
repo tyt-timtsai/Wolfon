@@ -27,7 +27,13 @@
       <button id="search-btn">Search</button>
       <button id="run-btn">Run</button>
     </div>
-
+    <label for="tag"> Tag :</label>
+    <input type="text" name="tag" id="tag">
+    <button id="tagBtn">Add tag</button>
+    <br>
+    <select name="version" id="version">
+        <option value="">- choose version</option>
+    </select>
     <div id="editor">console.log('Hello Javascript!');</div>
     <div id="terminal"></div>
 
@@ -42,6 +48,5 @@
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="../script/streamer.js"></script>
-    <script src="../script/compiler.js"></script>
   </body>
 </html>

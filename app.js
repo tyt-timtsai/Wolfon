@@ -45,6 +45,11 @@ io.on('connection', (socket) => {
     socket.to(room).emit('ice_candidate', data, socket.id);
   });
 
+  // Version Control
+  socket.on('addTag', (tag) => {
+    io.emit('addTag', tag);
+  });
+
   // Disconnect
   socket.on('disconnect', () => {
     console.log(userRoom, socket.id, 'disconnect');
