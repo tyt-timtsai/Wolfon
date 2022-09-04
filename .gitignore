@@ -18,4 +18,5 @@ node_modules/
 
 # public code folder
 public/code/
+server/
 

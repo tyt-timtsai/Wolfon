@@ -242,8 +242,6 @@ tagBtn.addEventListener('click', () => {
       .catch((err) => {
         console.log(err);
       });
-  } else {
-    alert('Please add tag name and code.');
   }
 });
 
