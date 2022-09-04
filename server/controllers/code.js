@@ -46,6 +46,7 @@ async function compile(req, res) {
     await fsPromises.rm(`./code/${id}/code.${extension}`);
     await fsPromises.rmdir(`./code/${id}`);
   }
+  return true;
 }
 
 async function getVersion(req, res) {
