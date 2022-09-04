@@ -32,6 +32,14 @@
                 "destructuring": "any",
                 "ignoreReadBeforeAssign": false
             }
-        ]
+        ],
+        "prefer-destructuring": ["error", {"object": true, "array": false}],
+        "react/no-unknown-property": [0, { "ignore": "ignore" }],
+        "react/prop-types": [0,{
+            "forbidDefaultForRequired": true,
+            "classes": "ignore",
+            "functions": "ignore",
+            "ignoreFunctionalComponents": true
+          }]
     }
 }

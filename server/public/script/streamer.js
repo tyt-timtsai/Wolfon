@@ -231,8 +231,9 @@ tagBtn.addEventListener('click', () => {
   const code = editor.getValue();
   if (tag.value && code) {
     axios.post(`/api/v1/code/${room}`, {
+      language: language.value,
       tag: tag.value,
-      code: JSON.stringify(code),
+      code,
     })
       .then((res) => {
         socket.emit('addTag', tag.value);

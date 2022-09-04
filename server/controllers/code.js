@@ -31,14 +31,8 @@ async function compile(req, res) {
   await fsPromises.writeFile(`./code/${id}/code.${extension}`, code);
   try {
     const { stdout } = await exec(`docker run --name ${id} -v $(pwd)/code/${id}:/code --rm runtime-${language}`);
-
     log = stdout;
-
     res.status(200).send(log);
-
-    await fsPromises.rm(`./code/${id}/code.${extension}`);
-    await fsPromises.rmdir(`./code/${id}`);
-
     console.log('Compile finished.');
   } catch (error) {
     console.log(error.stdout);
@@ -48,6 +42,9 @@ async function compile(req, res) {
       log = error.stderr;
     }
     return res.status(200).send(log);
+  } finally {
+    await fsPromises.rm(`./code/${id}/code.${extension}`);
+    await fsPromises.rmdir(`./code/${id}`);
   }
 }
 
@@ -55,7 +52,7 @@ async function getVersion(req, res) {
   if (req.query.tag) {
     const result = await codes.findOne(
       {
-        address: req.params.id, tag: req.query.tag,
+        room: req.params.id, tag: req.query.tag,
       },
       {
         projection: { _id: 0 },
@@ -65,13 +62,15 @@ async function getVersion(req, res) {
     return res.send(result);
   }
   console.log('Get all versions');
-  const result = await codes.find({ address: req.params.id }, { projection: { _id: 0 } }).toArray();
+  const result = await codes.find({ room: req.params.id }, { projection: { _id: 0 } }).toArray();
   return res.send(result);
 }
 
 async function addVersion(req, res) {
-  const { tag, code } = req.body;
-  const result = await codes.insertOne({ address: req.params.id, tag, code });
+  const { tag, code, language } = req.body;
+  const result = await codes.insertOne({
+    room: req.params.id, language, tag, code,
+  });
   res.send(result);
 }
 
