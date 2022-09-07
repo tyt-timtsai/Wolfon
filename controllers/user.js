@@ -1,5 +1,9 @@
+require('dotenv').config();
 const argon2 = require('argon2');
 const User = require('../models/user');
+const jwt = require('../utils/JWT');
+
+const { JWT_SECRET } = process.env;
 
 async function signUp(req, res) {
   const { name, email, password } = req.body.data;
@@ -9,7 +13,7 @@ async function signUp(req, res) {
   }
   const photo = req.body.file;
   const id = Math.floor(Math.random() * 1000000);
-  const onboard = (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -5);
+  const createdDate = (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -5);
   const hash = await argon2.hash(password);
   const userData = {
     id,
@@ -17,14 +21,15 @@ async function signUp(req, res) {
     email,
     password: hash,
     photo,
-    onboard,
+    created_dt: createdDate,
     friends: [],
     clubs: [],
     posts: [],
     fellowers: [],
   };
   await User.signUp(userData);
-  return res.status(200).send(userData);
+  const token = await jwt.sign(userData, JWT_SECRET);
+  return res.status(200).send(token);
 }
 
 async function signIn(req, res) {
@@ -35,7 +40,8 @@ async function signIn(req, res) {
   }
   try {
     if (await argon2.verify(userData.password, password)) {
-      return res.status(200).json({ status: 200, message: 'success' });
+      const token = await jwt.sign(userData, JWT_SECRET);
+      return res.status(200).json({ status: 200, message: 'success', data: token });
     }
     return res.status(403).json({ status: 403, message: 'Wrong password' });
   } catch (error) {
