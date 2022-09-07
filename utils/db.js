@@ -5,7 +5,7 @@ const { DB_USER, DB_PASS } = process.env;
 
 // mongodb 位置
 const url = 'localhost:27017';
-const uri = `mongodb://${DB_USER}:${DB_PASS}@${url}/admin?authSource=admin`;
+const uri = `mongodb://${DB_USER}:${DB_PASS}@${url}/`;
 
 // 資料庫名
 const dbName = 'test';
