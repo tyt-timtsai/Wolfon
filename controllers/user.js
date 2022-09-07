@@ -45,9 +45,23 @@ async function signIn(req, res) {
     }
     return res.status(403).json({ status: 403, message: 'Wrong password' });
   } catch (error) {
-    console.log('sign in decode error : ', error);
+    console.error('sign in decode error : ', error);
     return res.status(500).json({ status: 500, message: 'Server error' });
   }
 }
 
-module.exports = { signUp, signIn };
+async function profile(req, res) {
+  const auth = req.headers.authorization;
+  if (!auth || auth == null) {
+    return res.status(401).json({ status: 401, message: 'No Token' });
+  }
+  try {
+    const decode = await jwt.verify(auth, JWT_SECRET);
+    return res.status(200).json({ status: 200, message: 'success', data: decode });
+  } catch (error) {
+    console.error('User profile error : ', error);
+    return res.status(403).json({ status: 403, message: 'Authorization failed' });
+  }
+}
+
+module.exports = { signUp, signIn, profile };
