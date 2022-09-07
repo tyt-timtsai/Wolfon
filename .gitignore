@@ -19,3 +19,5 @@ node_modules/
 # public code folder
 public/code/
 
+# Mac development enviroment
+.DS_Store
