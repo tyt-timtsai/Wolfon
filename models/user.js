@@ -10,4 +10,9 @@ async function signIn(email) {
   return result;
 }
 
-module.exports = { signUp, signIn };
+async function get(id) {
+  const result = await db.users.findOne({ id });
+  return result;
+}
+
+module.exports = { signUp, signIn, get };

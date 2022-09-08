@@ -25,11 +25,14 @@ async function signUp(req, res) {
     friends: [],
     clubs: [],
     posts: [],
+    like_posts: [],
+    fellow_post: [],
+    fellows: [],
     fellowers: [],
   };
   await User.signUp(userData);
   const token = await jwt.sign(userData, JWT_SECRET);
-  return res.status(200).send(token);
+  return res.status(200).json({ status: 200, message: 'success', data: token });
 }
 
 async function signIn(req, res) {
@@ -62,6 +65,18 @@ async function profile(req, res) {
     console.error('User profile error : ', error);
     return res.status(403).json({ status: 403, message: 'Authorization failed' });
   }
+}
+
+async function applyFriend() {
+
+}
+
+async function addFriend() {
+
+}
+
+async function deleteFriend() {
+
 }
 
 module.exports = { signUp, signIn, profile };
