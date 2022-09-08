@@ -23,13 +23,18 @@ async function signUp(req, res) {
     photo,
     created_dt: createdDate,
     friends: [],
+    pending_friends: [],
+    apply_firends: [],
+    fellows: [],
+    fellowers: [],
     clubs: [],
     posts: [],
-    fellowers: [],
+    like_posts: [],
+    fellow_post: [],
   };
   await User.signUp(userData);
   const token = await jwt.sign(userData, JWT_SECRET);
-  return res.status(200).send(token);
+  return res.status(200).json({ status: 200, message: 'success', data: token });
 }
 
 async function signIn(req, res) {
@@ -64,4 +69,99 @@ async function profile(req, res) {
   }
 }
 
-module.exports = { signUp, signIn, profile };
+async function applyFriend(req, res) {
+  const auth = req.headers.authorization;
+  const userData = await jwt.verify(auth, JWT_SECRET);
+  // Add apply_friends in applier's data
+  await User.addApplyFriend(userData.id, req.body.id);
+
+  // Add pending_friends in target's data
+  await User.addPendingFriend(userData.id, req.body.id);
+
+  const updatedUserData = await User.get(userData.id);
+  const token = await jwt.sign(updatedUserData, JWT_SECRET);
+  return res.status(200).json({ status: 200, message: 'success', data: token });
+}
+
+async function addFriend(req, res) {
+  const auth = req.headers.authorization;
+  const userData = await jwt.verify(auth, JWT_SECRET);
+
+  // Add friends in user's and applier's data
+  await User.addFriend(userData.id, req.body.id);
+
+  // Delete pending_friends in data
+  await User.deletePendingFriend(userData.id, req.body.id);
+
+  // Delete apply_friend in applier's data
+  await User.deleteApplyFriend(req.body.id, userData.id);
+  const updatedUserData = await User.get(userData.id);
+  const token = await jwt.sign(updatedUserData, JWT_SECRET);
+  return res.status(200).json({ status: 200, message: 'success', data: token });
+}
+
+async function deleteFriend(req, res) {
+  const auth = req.headers.authorization;
+  const userData = await jwt.verify(auth, JWT_SECRET);
+  // Delete friends in both user's data
+  await User.deleteFriend(userData.id, req.body.id);
+  const updatedUserData = await User.get(userData.id);
+  const token = await jwt.sign(updatedUserData, JWT_SECRET);
+  return res.status(200).json({ status: 200, message: 'success', data: token });
+}
+
+async function cancelApplyFriend(req, res) {
+  const auth = req.headers.authorization;
+  const userData = await jwt.verify(auth, JWT_SECRET);
+  const { id, action } = req.body;
+  switch (action) {
+    case 'cancel':
+      await User.deleteApplyFriend(userData.id, id);
+      await User.deletePendingFriend(userData.id, id);
+      break;
+    case 'reject':
+      await User.deleteApplyFriend(id, userData.id);
+      await User.deletePendingFriend(id, userData.id);
+      break;
+
+    default:
+      console.log('lack of action');
+      break;
+  }
+
+  const updatedUserData = await User.get(userData.id);
+  const token = await jwt.sign(updatedUserData, JWT_SECRET);
+  return res.status(200).json({ status: 200, message: 'success', data: token });
+}
+
+async function fellow(req, res) {
+  const auth = req.headers.authorization;
+  const userData = await jwt.verify(auth, JWT_SECRET);
+  // TODO: Add fellows
+
+  // TODO: Add fellowers to target's data
+
+  return res.status(200).json({ status: 200, message: 'success', data: userData });
+}
+
+async function unfellow(req, res) {
+  const auth = req.headers.authorization;
+  const userData = await jwt.verify(auth, JWT_SECRET);
+  // TODO: Delete fellows
+
+  // TODO: Delete fellowers to target's data
+
+  return res.status(200).json({ status: 200, message: 'success', data: userData });
+}
+
+module.exports = {
+  signUp,
+  signIn,
+  profile,
+  applyFriend,
+  addFriend,
+  deleteFriend,
+  fellow,
+  unfellow,
+  cancelApplyFriend,
+};
