@@ -69,6 +69,13 @@ async function profile(req, res) {
   }
 }
 
+async function search(req, res) {
+  const { keyword } = req.query;
+  const regex = new RegExp(keyword, 'i');
+  const data = await User.search(regex);
+  return res.status(200).json({ status: 200, message: 'success', data });
+}
+
 async function applyFriend(req, res) {
   const auth = req.headers.authorization;
   if (!auth) {
@@ -176,6 +183,7 @@ module.exports = {
   signUp,
   signIn,
   profile,
+  search,
   applyFriend,
   addFriend,
   deleteFriend,

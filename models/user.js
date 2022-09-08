@@ -15,6 +15,11 @@ async function get(id) {
   return result;
 }
 
+async function search(keyword) {
+  const result = await db.users.find({ name: { $regex: keyword } }).toArray();
+  return result;
+}
+
 async function addFriend(userId, targetId) {
   const result = {};
   result.user = await db.users.updateOne(
@@ -105,6 +110,7 @@ module.exports = {
   signUp,
   signIn,
   get,
+  search,
   addFriend,
   deleteFriend,
   addApplyFriend,

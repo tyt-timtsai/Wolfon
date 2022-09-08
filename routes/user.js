@@ -4,6 +4,7 @@ const User = require('../controllers/user');
 router.route('/signup').post(User.signUp);
 router.route('/signin').post(User.signIn);
 router.route('/').get(User.profile);
+router.route('/search').get(User.search);
 
 router.route('/friend').post(User.applyFriend);
 router.route('/friend').patch(User.addFriend);
