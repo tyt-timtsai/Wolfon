@@ -15,8 +15,9 @@ function sign(payload, secret) {
 }
 
 function verify(token, secret) {
+  const jwt = token.replace('Bearer ', '');
   return new Promise((resolve, reject) => {
-    JWT.verify(token, secret, { algorithm }, (err, decode) => {
+    JWT.verify(jwt, secret, { algorithm }, (err, decode) => {
       if (err) {
         console.log('JWT verify error : ', err);
         return reject(err);

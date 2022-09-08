@@ -85,10 +85,12 @@ app.use((req, res, next) => {
 const liveRoute = require('./routes/live');
 const codeRoute = require('./routes/code');
 const userRoute = require('./routes/user');
+const postRoute = require('./routes/post');
 
 app.use(`/api/${API_VERSION}/live`, liveRoute);
 app.use(`/api/${API_VERSION}/code`, codeRoute);
 app.use(`/api/${API_VERSION}/user`, userRoute);
+app.use(`/api/${API_VERSION}/post`, postRoute);
 
 // Page not found
 app.use((req, res, next) => {
