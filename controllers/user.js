@@ -27,10 +27,10 @@ async function signUp(req, res) {
     apply_firends: [],
     fellows: [],
     fellowers: [],
-    clubs: [],
+    community: [],
     posts: [],
     like_posts: [],
-    fellow_post: [],
+    fellow_posts: [],
   };
   await User.signUp(userData);
   const token = await jwt.sign(userData, JWT_SECRET);
@@ -71,8 +71,11 @@ async function profile(req, res) {
 
 async function applyFriend(req, res) {
   const auth = req.headers.authorization;
+  if (!auth) {
+    return res.status(403).json({ status: 403, message: 'Unauthorization' });
+  }
   const userData = await jwt.verify(auth, JWT_SECRET);
-  // Add apply_friends in applier's data
+  // Add apply_friends in applicant's data
   await User.addApplyFriend(userData.id, req.body.id);
 
   // Add pending_friends in target's data
@@ -85,15 +88,18 @@ async function applyFriend(req, res) {
 
 async function addFriend(req, res) {
   const auth = req.headers.authorization;
+  if (!auth) {
+    return res.status(403).json({ status: 403, message: 'Unauthorization' });
+  }
   const userData = await jwt.verify(auth, JWT_SECRET);
 
-  // Add friends in user's and applier's data
+  // Add friends in user's and applicant's data
   await User.addFriend(userData.id, req.body.id);
 
   // Delete pending_friends in data
   await User.deletePendingFriend(userData.id, req.body.id);
 
-  // Delete apply_friend in applier's data
+  // Delete apply_friend in applicant's data
   await User.deleteApplyFriend(req.body.id, userData.id);
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
@@ -102,6 +108,9 @@ async function addFriend(req, res) {
 
 async function deleteFriend(req, res) {
   const auth = req.headers.authorization;
+  if (!auth) {
+    return res.status(403).json({ status: 403, message: 'Unauthorization' });
+  }
   const userData = await jwt.verify(auth, JWT_SECRET);
   // Delete friends in both user's data
   await User.deleteFriend(userData.id, req.body.id);
@@ -112,6 +121,9 @@ async function deleteFriend(req, res) {
 
 async function cancelApplyFriend(req, res) {
   const auth = req.headers.authorization;
+  if (!auth) {
+    return res.status(403).json({ status: 403, message: 'Unauthorization' });
+  }
   const userData = await jwt.verify(auth, JWT_SECRET);
   const { id, action } = req.body;
   switch (action) {
@@ -136,6 +148,9 @@ async function cancelApplyFriend(req, res) {
 
 async function fellow(req, res) {
   const auth = req.headers.authorization;
+  if (!auth) {
+    return res.status(403).json({ status: 403, message: 'Unauthorization' });
+  }
   const userData = await jwt.verify(auth, JWT_SECRET);
   // Add fellows & Add fellowers to target's data
   await User.addFellow(userData.id, req.body.id);
@@ -146,6 +161,9 @@ async function fellow(req, res) {
 
 async function unfellow(req, res) {
   const auth = req.headers.authorization;
+  if (!auth) {
+    return res.status(403).json({ status: 403, message: 'Unauthorization' });
+  }
   const userData = await jwt.verify(auth, JWT_SECRET);
   // Delete fellows & Delete fellowers to target's data
   await User.deleteFellow(userData.id, req.body.id);

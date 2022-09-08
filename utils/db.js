@@ -27,7 +27,8 @@ const db = client.db(dbName);
 const users = db.collection('users');
 const codes = db.collection('codes');
 const posts = db.collection('posts');
+const community = db.collection('communities');
 
 module.exports = {
-  client, users, codes, posts,
+  client, users, codes, posts, community,
 };
