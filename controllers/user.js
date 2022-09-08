@@ -137,21 +137,21 @@ async function cancelApplyFriend(req, res) {
 async function fellow(req, res) {
   const auth = req.headers.authorization;
   const userData = await jwt.verify(auth, JWT_SECRET);
-  // TODO: Add fellows
-
-  // TODO: Add fellowers to target's data
-
-  return res.status(200).json({ status: 200, message: 'success', data: userData });
+  // Add fellows & Add fellowers to target's data
+  await User.addFellow(userData.id, req.body.id);
+  const updatedUserData = await User.get(userData.id);
+  const token = await jwt.sign(updatedUserData, JWT_SECRET);
+  return res.status(200).json({ status: 200, message: 'success', data: token });
 }
 
 async function unfellow(req, res) {
   const auth = req.headers.authorization;
   const userData = await jwt.verify(auth, JWT_SECRET);
-  // TODO: Delete fellows
-
-  // TODO: Delete fellowers to target's data
-
-  return res.status(200).json({ status: 200, message: 'success', data: userData });
+  // Delete fellows & Delete fellowers to target's data
+  await User.deleteFellow(userData.id, req.body.id);
+  const updatedUserData = await User.get(userData.id);
+  const token = await jwt.sign(updatedUserData, JWT_SECRET);
+  return res.status(200).json({ status: 200, message: 'success', data: token });
 }
 
 module.exports = {

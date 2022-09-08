@@ -22,7 +22,7 @@ async function addFriend(userId, targetId) {
     { $addToSet: { friends: targetId } },
   );
 
-  result.applier = await db.users.updateOne(
+  result.terget = await db.users.updateOne(
     { id: targetId },
     { $addToSet: { friends: userId } },
   );
@@ -36,7 +36,7 @@ async function deleteFriend(userId, targetId) {
     { $pull: { friends: targetId } },
   );
 
-  result.applier = await db.users.updateOne(
+  result.terget = await db.users.updateOne(
     { id: targetId },
     { $pull: { friends: userId } },
   );
@@ -75,6 +75,32 @@ async function deletePendingFriend(userId, targetId) {
   return result;
 }
 
+async function addFellow(userId, targetId) {
+  const result = {};
+  result.user = await db.users.updateOne(
+    { id: userId },
+    { $addToSet: { fellows: targetId } },
+  );
+  result.terget = await db.users.updateOne(
+    { id: targetId },
+    { $addToSet: { fellowers: userId } },
+  );
+  return result;
+}
+
+async function deleteFellow(userId, targetId) {
+  const result = {};
+  result.user = await db.users.updateOne(
+    { id: userId },
+    { $pull: { fellows: targetId } },
+  );
+  result.terget = await db.users.updateOne(
+    { id: targetId },
+    { $pull: { fellowers: userId } },
+  );
+  return result;
+}
+
 module.exports = {
   signUp,
   signIn,
@@ -85,4 +111,6 @@ module.exports = {
   deleteApplyFriend,
   addPendingFriend,
   deletePendingFriend,
+  addFellow,
+  deleteFellow,
 };
