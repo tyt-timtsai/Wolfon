@@ -5,8 +5,18 @@ async function get(userId) {
   return result;
 }
 
+async function search(keyword) {
+  const result = await db.posts.find({ title: { $regex: keyword } }).toArray();
+  return result;
+}
+
 async function getOne(postId) {
   const result = await db.posts.findOneAndUpdate({ id: postId }, { $inc: { view: 1 } });
+  return result;
+}
+
+async function getAll() {
+  const result = await db.posts.find().toArray();
   return result;
 }
 
@@ -28,5 +38,5 @@ async function fellow(postId, userId) {
 }
 
 module.exports = {
-  get, getOne, create, like, fellow,
+  get, search, getOne, getAll, create, like, fellow,
 };

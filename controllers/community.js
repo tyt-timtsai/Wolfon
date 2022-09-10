@@ -6,19 +6,22 @@ const jwt = require('../utils/JWT');
 const { JWT_SECRET } = process.env;
 
 async function get(req, res) {
-  const data = await Community.get(+req.params.id);
+  let data;
+  const keyword = req.query.keyword || null;
+  let regex;
+  switch (req.params.id) {
+    case 'search':
+      if (keyword === null) {
+        return res.status(404).json({ status: 400, message: 'Missing keyword' });
+      }
+      regex = new RegExp(`${keyword}`, 'i');
+      data = await Community.search(regex);
+      break;
 
-  if (!data) {
-    return res.status(404).json({ status: 404, message: 'Not found' });
+    default:
+      data = await Community.get(+req.params.id);
+      break;
   }
-
-  return res.status(200).json({ status: 200, message: 'success', data });
-}
-
-async function search(req, res) {
-  const { keyword } = req.query;
-  const regex = new RegExp(`${keyword}`, 'i');
-  const data = await Community.search(regex);
 
   if (!data) {
     return res.status(404).json({ status: 404, message: 'Not found' });
@@ -41,7 +44,7 @@ async function create(req, res) {
   const communityData = {
     id,
     name,
-    create_dt: createdDate,
+    created_dt: createdDate,
     creator: userData.id,
     posts: [],
     admin: [userData.id],
@@ -104,7 +107,6 @@ async function confirmApply(req, res) {
 
 module.exports = {
   get,
-  search,
   create,
   apply,
   confirmApply,

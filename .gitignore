@@ -21,3 +21,6 @@ public/code/
 
 # Mac development enviroment
 .DS_Store
+
+# Code temprary directory
+code/

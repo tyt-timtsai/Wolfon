@@ -15,6 +15,7 @@ async function create(req, res) {
   const postData = {
     id,
     user_id: userData.id,
+    author: userData.name,
     likes: [],
     fellowers: [],
     view: 0,
@@ -30,9 +31,40 @@ async function create(req, res) {
 }
 
 async function get(req, res) {
-  const auth = req.headers.authorization;
-  const userData = await jwt.verify(auth, JWT_SECRET);
-  const posts = await Post.get(userData.id);
+  console.log(req.params.id);
+  const type = req.params.id;
+  let posts;
+  let auth;
+  let userData;
+  let regex;
+  switch (type) {
+    case 'all':
+      posts = await Post.getAll();
+      break;
+
+    case 'user':
+      auth = req.headers.authorization;
+      userData = await jwt.verify(auth, JWT_SECRET);
+      posts = await Post.get(userData.id);
+      break;
+
+    case 'search':
+      regex = new RegExp(`${req.query.keyword}`, 'i');
+      posts = await Post.search(regex);
+      break;
+
+    default:
+      posts = await Post.getOne(+type);
+      break;
+  }
+
+  res.status(200).json({ status: 200, message: 'success', data: posts });
+}
+
+async function search(req, res) {
+  const { keyword } = req.query;
+  const regex = new RegExp(`${keyword}`, 'i');
+  const posts = await Post.search(regex);
   res.status(200).json({ status: 200, message: 'success', data: posts });
 }
 
@@ -57,5 +89,5 @@ async function fellow(req, res) {
 }
 
 module.exports = {
-  get, create, like, fellow,
+  get, search, create, like, fellow,
 };
