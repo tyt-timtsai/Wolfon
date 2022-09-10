@@ -56,8 +56,8 @@ async function signIn(req, res) {
 }
 
 async function profile(req, res) {
-  const auth = req.headers.authorization;
-  if (!auth || auth == null) {
+  const auth = req.headers.authorization.replace('Bearer ', '');
+  if (!auth || auth === 'null') {
     return res.status(401).json({ status: 401, message: 'No Token' });
   }
   try {
@@ -77,7 +77,7 @@ async function search(req, res) {
 }
 
 async function applyFriend(req, res) {
-  const auth = req.headers.authorization;
+  const auth = req.headers.authorization.replace('Bearer ', '');
   if (!auth) {
     return res.status(403).json({ status: 403, message: 'Unauthorization' });
   }
@@ -94,7 +94,7 @@ async function applyFriend(req, res) {
 }
 
 async function addFriend(req, res) {
-  const auth = req.headers.authorization;
+  const auth = req.headers.authorization.replace('Bearer ', '');
   if (!auth) {
     return res.status(403).json({ status: 403, message: 'Unauthorization' });
   }
@@ -114,7 +114,7 @@ async function addFriend(req, res) {
 }
 
 async function deleteFriend(req, res) {
-  const auth = req.headers.authorization;
+  const auth = req.headers.authorization.replace('Bearer ', '');
   if (!auth) {
     return res.status(403).json({ status: 403, message: 'Unauthorization' });
   }
@@ -127,7 +127,7 @@ async function deleteFriend(req, res) {
 }
 
 async function cancelApplyFriend(req, res) {
-  const auth = req.headers.authorization;
+  const auth = req.headers.authorization.replace('Bearer ', '');
   if (!auth) {
     return res.status(403).json({ status: 403, message: 'Unauthorization' });
   }
@@ -154,7 +154,7 @@ async function cancelApplyFriend(req, res) {
 }
 
 async function fellow(req, res) {
-  const auth = req.headers.authorization;
+  const auth = req.headers.authorization.replace('Bearer ', '');
   if (!auth) {
     return res.status(403).json({ status: 403, message: 'Unauthorization' });
   }
@@ -167,7 +167,7 @@ async function fellow(req, res) {
 }
 
 async function unfellow(req, res) {
-  const auth = req.headers.authorization;
+  const auth = req.headers.authorization.replace('Bearer ', '');
   if (!auth) {
     return res.status(403).json({ status: 403, message: 'Unauthorization' });
   }
