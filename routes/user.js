@@ -11,7 +11,7 @@ router.route('/friend').patch(User.addFriend);
 router.route('/friend').put(User.cancelApplyFriend);
 router.route('/friend').delete(User.deleteFriend);
 
-router.route('/fellow').post(User.fellow);
-router.route('/fellow').delete(User.unfellow);
+router.route('/follow').post(User.fellow);
+router.route('/follow').delete(User.unfellow);
 
 module.exports = router;
