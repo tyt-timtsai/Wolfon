@@ -90,7 +90,6 @@ async function upload(req, res) {
     fileKey: Key,
     parts: partSignedUrlList,
   });
-  console.log(partSignedUrlList);
   console.log('Get presign url');
 }
 
@@ -105,10 +104,9 @@ async function completeUpload(req, res) {
       Parts: orderBy(parts, ['PartNumber'], ['asc']),
     },
   };
-  console.log(params);
   const completeMultipartUploadOutput = await s3.completeMultipartUpload(params).promise();
   console.log(completeMultipartUploadOutput);
-  res.send(completeMultipartUploadOutput);
+  res.status(200).send(completeMultipartUploadOutput);
   console.log('complete');
 }
 
