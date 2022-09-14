@@ -15,8 +15,9 @@ function signRoomId() {
   return roomId;
 }
 
-async function getLive(req, res) {
-  res.status(200).send('get live');
+async function get(req, res) {
+  const liveData = await Live.get();
+  res.status(200).json({ status: 200, message: 'success', liveData });
 }
 
 async function createLive(req, res) {
@@ -25,20 +26,27 @@ async function createLive(req, res) {
     return res.status(403).json({ status: 403, message: 'Unauthorization' });
   }
   const userData = await jwt.verify(auth, JWT_SECRET);
-  const timeStamp = (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -5);
-  let roomId;
-  roomId = signRoomId();
+  const { title, language } = req.body;
+  const timeStamp = (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -5) + 800;
+  let roomId = signRoomId();
+  let searchResult = await Live.searchById(roomId);
   console.log('roomId : ', roomId);
-  const searchResult = await Live.searchById(roomId);
 
   while (searchResult && searchResult.room_id === roomId) {
     roomId = signRoomId();
+    // eslint-disable-next-line no-await-in-loop
+    searchResult = await Live.searchById(roomId);
   }
   const liveData = {
     user_id: userData.id,
     streamer: userData.name,
-    room_id: roomId,
+    title,
+    language,
+    // room_id: roomId,
+    room_id: 'room1',
+    isStreaming: true,
     video_url: '',
+    view: 0,
     chats: [
       {
         sender: 'system',
@@ -48,6 +56,8 @@ async function createLive(req, res) {
     ],
     total_message: 1,
   };
+  const result = await Live.create(liveData);
+  console.log(result);
   return res.status(200).json({ status: 200, message: 'success', liveData });
 }
 
@@ -95,7 +105,9 @@ async function upload(req, res) {
 
 async function completeUpload(req, res) {
   console.log('in complete');
-  const { fileId, fileKey, parts } = req.body;
+  const {
+    fileId, fileKey, parts, roomId,
+  } = req.body;
   const params = {
     Bucket: process.env.S3_BUCKET,
     Key: fileKey,
@@ -106,10 +118,18 @@ async function completeUpload(req, res) {
   };
   const completeMultipartUploadOutput = await s3.completeMultipartUpload(params).promise();
   console.log(completeMultipartUploadOutput);
+  const url = completeMultipartUploadOutput.Location;
+  console.log(roomId);
+  console.log(url);
+  try {
+    await Live.addRecordUrl(roomId, url);
+  } catch (error) {
+    console.log(error);
+  }
   res.status(200).send(completeMultipartUploadOutput);
   console.log('complete');
 }
 
 module.exports = {
-  getLive, createLive, completeUpload, upload,
+  get, createLive, completeUpload, upload,
 };
