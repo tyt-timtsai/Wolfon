@@ -64,6 +64,7 @@ async function addVersion(req, res) {
         {
           tag,
           code,
+          child: [],
         },
       ],
     };
@@ -72,12 +73,15 @@ async function addVersion(req, res) {
     console.log('exist');
     const existTag = await Code.getTag(req.params.id, tag);
     if (existTag.length > 0) {
-      res.status(400).json({ status: 400, message: 'Duplicate tag' });
-    } else {
-      result = await Code.add(req.params.id, tag, code, req.body.from || null);
+      return res.status(400).json({ status: 400, message: 'Duplicate tag' });
+    }
+    result = await Code.add(req.params.id, tag, code, req.body.from || null);
+    if (req.body.from) {
+      const child = await Code.addChild(req.params.id, req.body.from, tag);
+      console.log(child);
     }
   }
-  res.send(result);
+  return res.status(200).json({ status: 200, message: 'success', result });
 }
 
 async function getVersion(req, res) {
