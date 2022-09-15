@@ -1,7 +1,7 @@
 const fs = require('fs');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-const { codes } = require('../utils/db');
+const Code = require('../models/code');
 
 const fsPromises = fs.promises;
 
@@ -49,30 +49,46 @@ async function compile(req, res) {
   return true;
 }
 
-async function getVersion(req, res) {
-  if (req.query.tag) {
-    const result = await codes.findOne(
-      {
-        room: req.params.id, tag: req.query.tag,
-      },
-      {
-        projection: { _id: 0 },
-      },
-    );
-    console.log(result);
-    return res.send(result);
+async function addVersion(req, res) {
+  const {
+    tag, code, language,
+  } = req.body;
+  let result;
+  const schema = await Code.get(req.params.id);
+  if (schema == null) {
+    console.log('not exist');
+    const codeData = {
+      room: req.params.id,
+      language,
+      tags: [
+        {
+          tag,
+          code,
+        },
+      ],
+    };
+    result = await Code.create(codeData);
+  } else {
+    console.log('exist');
+    const existTag = await Code.getTag(req.params.id, tag);
+    if (existTag.length > 0) {
+      res.status(400).json({ status: 400, message: 'Duplicate tag' });
+    } else {
+      result = await Code.add(req.params.id, tag, code, req.body.from || null);
+    }
   }
-  console.log('Get all versions');
-  const result = await codes.find({ room: req.params.id }, { projection: { _id: 0 } }).toArray();
-  return res.send(result);
+  res.send(result);
 }
 
-async function addVersion(req, res) {
-  const { tag, code, language } = req.body;
-  const result = await codes.insertOne({
-    room: req.params.id, language, tag, code,
-  });
-  res.send(result);
+async function getVersion(req, res) {
+  if (req.query.tag) {
+    const result = await Code.getTag(req.params.id, req.query.tag);
+    console.log(result[0]);
+    return res.send(result[0]);
+  }
+  console.log('Get all versions');
+  const result = await Code.getAll(req.params.id);
+  return res.send(result);
 }
 
 module.exports = { compile, addVersion, getVersion };

@@ -56,9 +56,22 @@ async function createLive(req, res) {
     ],
     total_message: 1,
   };
-  const result = await Live.create(liveData);
-  console.log(result);
+  // const result = await Live.create(liveData);
+  // console.log(result);
   return res.status(200).json({ status: 200, message: 'success', liveData });
+}
+
+async function search(req, res) {
+  const keyword = req.query.keyword || null;
+  let data;
+  console.log(keyword);
+  if (keyword === null || keyword === 'all') {
+    data = await Live.get();
+  } else {
+    const regex = new RegExp(`${keyword}`, 'i');
+    data = await Live.searchByTitle(regex);
+  }
+  res.status(200).json({ status: 200, message: 'success', data });
 }
 
 async function upload(req, res) {
@@ -131,5 +144,5 @@ async function completeUpload(req, res) {
 }
 
 module.exports = {
-  get, createLive, completeUpload, upload,
+  get, createLive, search, completeUpload, upload,
 };
