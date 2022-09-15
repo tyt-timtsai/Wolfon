@@ -18,7 +18,18 @@ async function add(roomId, tag, code, from) {
       },
     },
   );
-  console.log('model result : ', result);
+  return result;
+}
+
+async function addChild(roomId, tag, childTag) {
+  const result = await db.codes.updateOne(
+    { room: roomId, 'tags.tag': tag },
+    {
+      $addToSet: {
+        'tags.$.child': childTag,
+      },
+    },
+  );
   return result;
 }
 
@@ -68,5 +79,5 @@ async function getAll(roomId) {
 }
 
 module.exports = {
-  create, add, get, getTag, getAll,
+  create, add, addChild, get, getTag, getAll,
 };
