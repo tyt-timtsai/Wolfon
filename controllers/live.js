@@ -20,13 +20,14 @@ async function get(req, res) {
   res.status(200).json({ status: 200, message: 'success', liveData });
 }
 
-async function createLive(req, res) {
+async function create(req, res) {
   const auth = req.headers.authorization;
   if (!auth) {
     return res.status(403).json({ status: 403, message: 'Unauthorization' });
   }
+  console.log(req.body);
   const userData = await jwt.verify(auth, JWT_SECRET);
-  const { title, language } = req.body;
+  const { title, language, tags } = req.body;
   const timeStamp = (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -5) + 800;
   let roomId = signRoomId();
   let searchResult = await Live.searchById(roomId);
@@ -44,6 +45,7 @@ async function createLive(req, res) {
     language,
     // room_id: roomId,
     room_id: 'room1',
+    tags,
     isStreaming: true,
     video_url: '',
     view: 0,
@@ -144,5 +146,5 @@ async function completeUpload(req, res) {
 }
 
 module.exports = {
-  get, createLive, search, completeUpload, upload,
+  get, create, search, completeUpload, upload,
 };
