@@ -31,12 +31,24 @@ async function like(postId, userId) {
   return result;
 }
 
+async function unlike(postId, userId) {
+  const result = await db.posts.updateOne({ id: postId }, { $pull: { likes: userId } });
+  await db.users.updateOne({ id: userId }, { $pull: { like_posts: postId } });
+  return result;
+}
+
 async function fellow(postId, userId) {
   await db.posts.updateOne({ id: postId }, { $addToSet: { fellowers: userId } });
   const result = await db.users.updateOne({ id: userId }, { $addToSet: { fellow_posts: postId } });
   return result;
 }
 
+async function unfellow(postId, userId) {
+  await db.posts.updateOne({ id: postId }, { $pull: { fellowers: userId } });
+  const result = await db.users.updateOne({ id: userId }, { $pull: { fellow_posts: postId } });
+  return result;
+}
+
 module.exports = {
-  get, search, getOne, getAll, create, like, fellow,
+  get, search, getOne, getAll, create, like, unlike, fellow, unfellow,
 };

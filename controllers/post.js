@@ -31,34 +31,36 @@ async function create(req, res) {
 }
 
 async function get(req, res) {
-  console.log(req.params.id);
   const type = req.params.id;
   let posts;
   let auth;
   let userData;
   let regex;
+  let data;
   switch (type) {
     case 'all':
-      posts = await Post.getAll();
+      data = await Post.getAll();
       break;
 
     case 'user':
       auth = req.headers.authorization;
       userData = await jwt.verify(auth, JWT_SECRET);
-      posts = await Post.get(userData.id);
+      data = await Post.get(userData.id);
       break;
 
     case 'search':
       regex = new RegExp(`${req.query.keyword}`, 'i');
-      posts = await Post.search(regex);
+      data = await Post.search(regex);
       break;
 
     default:
       posts = await Post.getOne(+type);
+      userData = await User.get(posts.value.user_id);
+      data = { post: posts.value, user: userData };
       break;
   }
 
-  res.status(200).json({ status: 200, message: 'success', data: posts });
+  res.status(200).json({ status: 200, message: 'success', data });
 }
 
 async function search(req, res) {
@@ -72,7 +74,11 @@ async function like(req, res) {
   const postId = +req.params.id;
   const auth = req.headers.authorization;
   const userData = await jwt.verify(auth, JWT_SECRET);
-  await Post.like(postId, userData.id);
+  if (userData.like_posts.includes(postId)) {
+    await Post.unlike(postId, userData.id);
+  } else {
+    await Post.like(postId, userData.id);
+  }
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
   res.status(200).json({ status: 200, message: 'success', data: token });
@@ -82,7 +88,11 @@ async function fellow(req, res) {
   const postId = +req.params.id;
   const auth = req.headers.authorization;
   const userData = await jwt.verify(auth, JWT_SECRET);
-  await Post.fellow(postId, userData.id);
+  if (userData.fellow_posts.includes(postId)) {
+    await Post.unfellow(postId, userData.id);
+  } else {
+    await Post.fellow(postId, userData.id);
+  }
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
   res.status(200).json({ status: 200, message: 'success', data: token });
