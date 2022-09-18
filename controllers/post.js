@@ -6,8 +6,7 @@ const jwt = require('../utils/JWT');
 const { JWT_SECRET } = process.env;
 
 async function create(req, res) {
-  const auth = req.headers.authorization;
-  const userData = await jwt.verify(auth, JWT_SECRET);
+  const { userData } = req;
   const createdDate = (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -5);
   const id = Math.floor(Math.random() * 1000000);
 
@@ -33,8 +32,10 @@ async function create(req, res) {
 async function get(req, res) {
   const type = req.params.id;
   let posts;
-  let auth;
   let userData;
+  if (req.headers.authorization) {
+    userData = await jwt.verify(req.headers.authorization, JWT_SECRET);
+  }
   let regex;
   let data;
   switch (type) {
@@ -43,8 +44,6 @@ async function get(req, res) {
       break;
 
     case 'user':
-      auth = req.headers.authorization;
-      userData = await jwt.verify(auth, JWT_SECRET);
       data = await Post.get(userData.id);
       break;
 
@@ -56,19 +55,19 @@ async function get(req, res) {
     default:
       posts = await Post.getOne(+type);
       userData = await User.get(posts.value.user_id);
-      data = { post: posts.value, user: userData };
+      data = { post: posts.value, userData };
       break;
   }
 
   res.status(200).json({ status: 200, message: 'success', data });
 }
 
-async function search(req, res) {
-  const { keyword } = req.query;
-  const regex = new RegExp(`${keyword}`, 'i');
-  const posts = await Post.search(regex);
-  res.status(200).json({ status: 200, message: 'success', data: posts });
-}
+// async function search(req, res) {
+//   const { keyword } = req.query;
+//   const regex = new RegExp(`${keyword}`, 'i');
+//   const posts = await Post.search(regex);
+//   res.status(200).json({ status: 200, message: 'successlllll', data: posts });
+// }
 
 async function like(req, res) {
   const postId = +req.params.id;
@@ -99,5 +98,5 @@ async function fellow(req, res) {
 }
 
 module.exports = {
-  get, search, create, like, fellow,
+  get, create, like, fellow,
 };
