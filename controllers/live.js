@@ -1,10 +1,7 @@
 require('dotenv').config();
 const { orderBy } = require('lodash');
-const jwt = require('../utils/JWT');
 const s3 = require('../utils/aws_s3');
 const Live = require('../models/live');
-
-const { JWT_SECRET } = process.env;
 
 function signRoomId() {
   let roomId = '';
@@ -21,12 +18,7 @@ async function get(req, res) {
 }
 
 async function create(req, res) {
-  const auth = req.headers.authorization;
-  if (!auth) {
-    return res.status(403).json({ status: 403, message: 'Unauthorization' });
-  }
-  console.log(req.body);
-  const userData = await jwt.verify(auth, JWT_SECRET);
+  const { userData } = req;
   const { title, language, tags } = req.body;
   const timeStamp = (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -5) + 800;
   let roomId = signRoomId();

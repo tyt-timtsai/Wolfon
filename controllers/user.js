@@ -56,17 +56,7 @@ async function signIn(req, res) {
 }
 
 async function profile(req, res) {
-  const auth = req.headers.authorization.replace('Bearer ', '');
-  if (!auth || auth === 'null') {
-    return res.status(401).json({ status: 401, message: 'No Token' });
-  }
-  try {
-    const decode = await jwt.verify(auth, JWT_SECRET);
-    return res.status(200).json({ status: 200, message: 'success', data: decode });
-  } catch (error) {
-    console.error('User profile error : ', error);
-    return res.status(403).json({ status: 403, message: 'Authorization failed' });
-  }
+  return res.status(200).json({ status: 200, message: 'success', data: req.userData });
 }
 
 async function search(req, res) {
@@ -77,11 +67,7 @@ async function search(req, res) {
 }
 
 async function applyFriend(req, res) {
-  const auth = req.headers.authorization.replace('Bearer ', '');
-  if (!auth) {
-    return res.status(403).json({ status: 403, message: 'Unauthorization' });
-  }
-  const userData = await jwt.verify(auth, JWT_SECRET);
+  const { userData } = req;
   // Add apply_friends in applicant's data
   await User.addApplyFriend(userData.id, req.body.id);
 
@@ -94,11 +80,7 @@ async function applyFriend(req, res) {
 }
 
 async function addFriend(req, res) {
-  const auth = req.headers.authorization.replace('Bearer ', '');
-  if (!auth) {
-    return res.status(403).json({ status: 403, message: 'Unauthorization' });
-  }
-  const userData = await jwt.verify(auth, JWT_SECRET);
+  const { userData } = req;
 
   // Add friends in user's and applicant's data
   await User.addFriend(userData.id, req.body.id);
@@ -114,11 +96,8 @@ async function addFriend(req, res) {
 }
 
 async function deleteFriend(req, res) {
-  const auth = req.headers.authorization.replace('Bearer ', '');
-  if (!auth) {
-    return res.status(403).json({ status: 403, message: 'Unauthorization' });
-  }
-  const userData = await jwt.verify(auth, JWT_SECRET);
+  const { userData } = req;
+
   // Delete friends in both user's data
   await User.deleteFriend(userData.id, req.body.id);
   const updatedUserData = await User.get(userData.id);
@@ -127,11 +106,8 @@ async function deleteFriend(req, res) {
 }
 
 async function cancelApplyFriend(req, res) {
-  const auth = req.headers.authorization.replace('Bearer ', '');
-  if (!auth) {
-    return res.status(403).json({ status: 403, message: 'Unauthorization' });
-  }
-  const userData = await jwt.verify(auth, JWT_SECRET);
+  const { userData } = req;
+
   const { id, action } = req.body;
   switch (action) {
     case 'cancel':
@@ -154,11 +130,8 @@ async function cancelApplyFriend(req, res) {
 }
 
 async function fellow(req, res) {
-  const auth = req.headers.authorization.replace('Bearer ', '');
-  if (!auth) {
-    return res.status(403).json({ status: 403, message: 'Unauthorization' });
-  }
-  const userData = await jwt.verify(auth, JWT_SECRET);
+  const { userData } = req;
+
   // Add fellows & Add fellowers to target's data
   await User.addFellow(userData.id, req.body.id);
   const updatedUserData = await User.get(userData.id);
@@ -167,11 +140,8 @@ async function fellow(req, res) {
 }
 
 async function unfellow(req, res) {
-  const auth = req.headers.authorization.replace('Bearer ', '');
-  if (!auth) {
-    return res.status(403).json({ status: 403, message: 'Unauthorization' });
-  }
-  const userData = await jwt.verify(auth, JWT_SECRET);
+  const { userData } = req;
+
   // Delete fellows & Delete fellowers to target's data
   await User.deleteFellow(userData.id, req.body.id);
   const updatedUserData = await User.get(userData.id);

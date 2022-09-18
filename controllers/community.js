@@ -31,13 +31,7 @@ async function get(req, res) {
 }
 
 async function create(req, res) {
-  const auth = req.headers.authorization;
-
-  if (!auth) {
-    return res.status(403).json({ status: 403, message: 'Unauthorization' });
-  }
-
-  const userData = await jwt.verify(auth, JWT_SECRET);
+  const { userData } = req;
   const id = Math.floor(Math.random() * 1000000);
   const createdDate = (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -5);
   const { name, isPublic } = req.body;
@@ -60,16 +54,10 @@ async function create(req, res) {
 }
 
 async function apply(req, res) {
-  const auth = req.headers.authorization;
-
-  if (!auth) {
-    return res.status(403).json({ status: 403, message: 'Unauthorization' });
-  }
+  const { userData } = req;
   if (!req.params.id) {
     return res.status(404).json({ status: 404, message: 'Not found' });
   }
-
-  const userData = await jwt.verify(auth, JWT_SECRET);
   await Community.apply(+req.params.id, userData.id);
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
@@ -77,17 +65,13 @@ async function apply(req, res) {
 }
 
 async function confirmApply(req, res) {
-  const auth = req.headers.authorization;
   const { id } = req.params;
 
-  if (!auth) {
-    return res.status(403).json({ status: 403, message: 'Unauthorization' });
-  }
   if (!id) {
     return res.status(400).json({ status: 400, message: 'Missing community id or user id' });
   }
 
-  const userData = await jwt.verify(auth, JWT_SECRET);
+  const { userData } = req;
   const communityData = await Community.get(+id);
   const isAdmin = communityData.admin.some((user) => user === userData.id);
 

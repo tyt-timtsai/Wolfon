@@ -1,14 +1,15 @@
 const router = require('express').Router();
 const Post = require('../controllers/post');
+const { auth } = require('../middlewares/auth');
 
-router.route('/').post(Post.create);
+router.route('/').post(auth, Post.create);
 
 router.route('/:id').get(Post.get);
 
-router.route('/like/:id').get(Post.like);
+router.route('/like/:id').get(auth, Post.like);
 
-router.route('/fellow/:id').get(Post.fellow);
+router.route('/fellow/:id').get(auth, Post.fellow);
 
-router.route('/search').get(Post.search);
+// router.route('/search').get(Post.search);
 
 module.exports = router;
