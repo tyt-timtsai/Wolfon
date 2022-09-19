@@ -24,7 +24,7 @@ async function signUp(req, res) {
     created_dt: createdDate,
     friends: [],
     pending_friends: [],
-    apply_firends: [],
+    apply_friends: [],
     fellows: [],
     fellowers: [],
     community: [],
@@ -141,12 +141,39 @@ async function fellow(req, res) {
 
 async function unfellow(req, res) {
   const { userData } = req;
-
   // Delete fellows & Delete fellowers to target's data
   await User.deleteFellow(userData.id, req.body.id);
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
   return res.status(200).json({ status: 200, message: 'success', data: token });
+}
+
+async function getLive(req, res) {
+  const { userData } = req;
+  const data = await User.getUserLive(userData.id);
+  return res.status(200).json({ status: 200, message: 'success', data });
+}
+
+async function getPost(req, res) {
+  const { userData } = req;
+  const data = await User.getUserPost(userData.id);
+  // const data = 'post';
+  return res.status(200).json({ status: 200, message: 'success', data });
+}
+
+async function getFriend(req, res) {
+  const { userData } = req;
+  console.log(userData);
+  // const data = await User.getUserLive(userData.id);
+  const data = 'friend';
+  return res.status(200).json({ status: 200, message: 'success', data });
+}
+
+async function getCommunity(req, res) {
+  const { userData } = req;
+  // const data = await User.getUserLive(userData.id);
+  const data = 'community';
+  return res.status(200).json({ status: 200, message: 'success', data });
 }
 
 module.exports = {
@@ -160,4 +187,8 @@ module.exports = {
   fellow,
   unfellow,
   cancelApplyFriend,
+  getLive,
+  getPost,
+  getFriend,
+  getCommunity,
 };

@@ -15,4 +15,9 @@ router.route('/friend').delete(auth, User.deleteFriend);
 router.route('/follow').post(auth, User.fellow);
 router.route('/follow').delete(auth, User.unfellow);
 
+router.route('/live').get(auth, User.getLive);
+router.route('/post').get(auth, User.getPost);
+router.route('/friend').get(auth, User.getFriend);
+router.route('/community').get(auth, User.getCommunity);
+
 module.exports = router;
