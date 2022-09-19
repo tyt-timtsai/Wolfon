@@ -35,8 +35,8 @@ async function create(req, res) {
     streamer: userData.name,
     title,
     language,
-    // room_id: roomId,
-    room_id: 'room1',
+    room_id: roomId,
+    // room_id: 'room1',
     tags,
     isStreaming: true,
     video_url: '',
@@ -50,8 +50,8 @@ async function create(req, res) {
     ],
     total_message: 1,
   };
-  // const result = await Live.create(liveData);
-  // console.log(result);
+  const result = await Live.create(liveData);
+  console.log(result);
   return res.status(200).json({ status: 200, message: 'success', liveData });
 }
 
