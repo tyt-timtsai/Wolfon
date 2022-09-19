@@ -20,6 +20,7 @@ async function get(req, res) {
 async function create(req, res) {
   const { userData } = req;
   const { title, language, tags } = req.body;
+  console.log(req.file);
   const timeStamp = (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -5) + 800;
   let roomId = signRoomId();
   let searchResult = await Live.searchById(roomId);
@@ -36,11 +37,12 @@ async function create(req, res) {
     title,
     language,
     room_id: roomId,
-    // room_id: 'room1',
     tags,
     isStreaming: true,
     video_url: '',
     view: 0,
+    cover_img: req.file.path,
+    img: req.file.filename,
     chats: [
       {
         sender: 'system',
