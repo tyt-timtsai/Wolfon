@@ -9,7 +9,10 @@ const server = http.createServer(app);
 const { Server } = require('socket.io');
 
 const io = new Server(server, {
-  cors: true,
+  // cors: true,
+  cors: {
+    origin: '*',
+  },
 });
 
 const { SERVER_PORT, API_VERSION } = process.env;
