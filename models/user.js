@@ -106,6 +106,26 @@ async function deleteFellow(userId, targetId) {
   return result;
 }
 
+async function getUserLive(userId) {
+  const result = await db.lives.find({ user_id: userId }).toArray();
+  return result;
+}
+
+async function getUserPost(userId) {
+  const result = await db.posts.find({ user_id: userId }).toArray();
+  return result;
+}
+
+async function getUserFriend(userId) {
+  const result = await db.users.findOne({ user_id: userId });
+  return result;
+}
+
+async function getUserCommunity(userId) {
+  const result = await db.lives.find({ user_id: userId }).toArray();
+  return result;
+}
+
 module.exports = {
   signUp,
   signIn,
@@ -119,4 +139,8 @@ module.exports = {
   deletePendingFriend,
   addFellow,
   deleteFellow,
+  getUserLive,
+  getUserPost,
+  getUserFriend,
+  getUserCommunity,
 };

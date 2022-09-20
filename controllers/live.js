@@ -41,7 +41,7 @@ async function create(req, res) {
     isStreaming: true,
     video_url: '',
     view: 0,
-    cover_img: req.file.path,
+    cover_img: `/uploads/lives/${req.file.filename}`,
     img: req.file.filename,
     chats: [
       {

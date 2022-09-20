@@ -29,9 +29,6 @@ io.on('connection', (socket) => {
   let userRoom;
   console.log(socket.id, 'connected');
   socket.on('join', (room, name) => {
-    console.log(room);
-    console.log(name);
-    socket.join(room);
     socket.to(room).emit('viewer', socket.id, name);
   });
   // Transport Offer

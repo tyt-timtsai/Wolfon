@@ -26,6 +26,7 @@ async function create(req, res) {
     comments: [],
   };
   const result = await Post.create(postData);
+  result.id = id;
   res.status(200).json({ status: 200, message: 'success', data: result });
 }
 
@@ -38,28 +39,35 @@ async function get(req, res) {
   }
   let regex;
   let data;
-  switch (type) {
-    case 'all':
-      data = await Post.getAll();
-      break;
+  try {
+    switch (type) {
+      case 'all':
+        data = await Post.getAll();
+        break;
 
-    case 'user':
-      data = await Post.get(userData.id);
-      break;
+      case 'user':
+        data = await Post.get(userData.id);
+        break;
 
-    case 'search':
-      regex = new RegExp(`${req.query.keyword}`, 'i');
-      data = await Post.search(regex);
-      break;
+      case 'search':
+        regex = new RegExp(`${req.query.keyword}`, 'i');
+        data = await Post.search(regex);
+        break;
 
-    default:
-      posts = await Post.getOne(+type);
-      userData = await User.get(posts.value.user_id);
-      data = { post: posts.value, userData };
-      break;
+      default:
+        posts = await Post.getOne(+type);
+        userData = await User.get(posts.value.user_id);
+        data = { post: posts.value, userData };
+        break;
+    }
+
+    return res.status(200).json({ status: 200, message: 'success', data });
+  } catch (error) {
+    console.log('GET Post function error : ', error);
+    console.log('GET Post function type : ', type);
+    data = error;
+    return res.status(500).json({ status: 500, message: 'fail', data });
   }
-
-  res.status(200).json({ status: 200, message: 'success', data });
 }
 
 // async function search(req, res) {

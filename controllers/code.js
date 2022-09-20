@@ -86,13 +86,13 @@ async function addVersion(req, res) {
 
 async function getVersion(req, res) {
   if (req.query.tag) {
-    const result = await Code.getTag(req.params.id, req.query.tag);
-    console.log(result[0]);
-    return res.send(result[0]);
+    const data = await Code.getTag(req.params.id, req.query.tag);
+    console.log(data[0]);
+    return res.status(200).json({ status: 200, message: 'success', data: data[0] });
   }
   console.log('Get all versions');
-  const result = await Code.getAll(req.params.id);
-  return res.send(result);
+  const data = await Code.getAll(req.params.id);
+  return res.status(200).json({ status: 200, message: 'success', data });
 }
 
 module.exports = { compile, addVersion, getVersion };

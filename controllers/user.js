@@ -24,7 +24,7 @@ async function signUp(req, res) {
     created_dt: createdDate,
     friends: [],
     pending_friends: [],
-    apply_firends: [],
+    apply_friends: [],
     fellows: [],
     fellowers: [],
     community: [],
@@ -72,7 +72,7 @@ async function applyFriend(req, res) {
   await User.addApplyFriend(userData.id, req.body.id);
 
   // Add pending_friends in target's data
-  await User.addPendingFriend(userData.id, req.body.id);
+  await User.addPendingFriend(req.body.id, userData.id);
 
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
@@ -112,11 +112,12 @@ async function cancelApplyFriend(req, res) {
   switch (action) {
     case 'cancel':
       await User.deleteApplyFriend(userData.id, id);
-      await User.deletePendingFriend(userData.id, id);
+      await User.deletePendingFriend(id, userData.id);
       break;
     case 'reject':
       await User.deleteApplyFriend(id, userData.id);
-      await User.deletePendingFriend(id, userData.id);
+      await User.deletePendingFriend(userData.id, id);
+
       break;
 
     default:
@@ -141,12 +142,54 @@ async function fellow(req, res) {
 
 async function unfellow(req, res) {
   const { userData } = req;
-
   // Delete fellows & Delete fellowers to target's data
   await User.deleteFellow(userData.id, req.body.id);
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
   return res.status(200).json({ status: 200, message: 'success', data: token });
+}
+
+async function getLive(req, res) {
+  const { userData } = req;
+  const data = await User.getUserLive(userData.id);
+  return res.status(200).json({ status: 200, message: 'success', data });
+}
+
+async function getPost(req, res) {
+  const { userData } = req;
+  const data = await User.getUserPost(userData.id);
+  // const data = 'post';
+  return res.status(200).json({ status: 200, message: 'success', data });
+}
+
+async function getFriend(req, res) {
+  const { userData } = req;
+  const data = {
+    friends: [],
+    pending_friends: [],
+  };
+
+  if (userData.pending_friends.length > 0) {
+    for (let i = 0; i < userData.pending_friends.length; i += 1) {
+      const result = await User.get(userData.pending_friends[i]);
+      data.pending_friends.push(result);
+    }
+  }
+  if (userData.friends.length > 0) {
+    for (let i = 0; i < userData.friends.length; i += 1) {
+      const result = await User.get(userData.friends[i]);
+      data.friends.push(result);
+    }
+  }
+  // const data = await User.getUserLive(userData.id);
+  return res.status(200).json({ status: 200, message: 'success', data });
+}
+
+async function getCommunity(req, res) {
+  const { userData } = req;
+  // const data = await User.getUserLive(userData.id);
+  const data = 'community';
+  return res.status(200).json({ status: 200, message: 'success', data });
 }
 
 module.exports = {
@@ -160,4 +203,8 @@ module.exports = {
   fellow,
   unfellow,
   cancelApplyFriend,
+  getLive,
+  getPost,
+  getFriend,
+  getCommunity,
 };
