@@ -1,7 +1,10 @@
 require('dotenv').config();
 const { orderBy } = require('lodash');
-const s3 = require('../utils/aws_s3');
+const { s3, s3LiveUpload } = require('../utils/aws_s3');
 const Live = require('../models/live');
+const User = require('../models/user');
+
+// const { IMG_ENDPOINT } = process.env;
 
 function signRoomId() {
   let roomId = '';
@@ -20,7 +23,6 @@ async function get(req, res) {
 async function create(req, res) {
   const { userData } = req;
   const { title, language, tags } = req.body;
-  console.log(req.file);
   const timeStamp = (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -5) + 800;
   let roomId = signRoomId();
   let searchResult = await Live.searchById(roomId);
@@ -31,6 +33,9 @@ async function create(req, res) {
     // eslint-disable-next-line no-await-in-loop
     searchResult = await Live.searchById(roomId);
   }
+
+  const s3Result = await s3LiveUpload(roomId, req.file);
+
   const liveData = {
     user_id: userData.id,
     streamer: userData.name,
@@ -41,7 +46,8 @@ async function create(req, res) {
     isStreaming: true,
     video_url: '',
     view: 0,
-    cover_img: `/uploads/lives/${req.file.filename}`,
+    // cover_img: `${IMG_ENDPOINT}${s3Result.Key}`,
+    cover_img: s3Result.Key,
     img: req.file.filename,
     chats: [
       {
@@ -54,6 +60,10 @@ async function create(req, res) {
   };
   const result = await Live.create(liveData);
   console.log(result);
+  console.log(userData.id);
+  console.log(roomId);
+  const userResult = await User.addUserLive(userData.id, roomId);
+  console.log(userResult);
   return res.status(200).json({ status: 200, message: 'success', liveData });
 }
 

@@ -8,8 +8,6 @@ router.route('/:id').get(Post.get);
 
 router.route('/like/:id').get(auth, Post.like);
 
-router.route('/fellow/:id').get(auth, Post.fellow);
-
-// router.route('/search').get(Post.search);
+router.route('/follow/:id').get(auth, Post.follow);
 
 module.exports = router;

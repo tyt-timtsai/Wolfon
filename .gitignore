@@ -19,6 +19,10 @@ node_modules/
 # public code folder
 public/code/
 
+# upload images
+public/uploads/lives
+public/uploads/users
+
 # Mac development enviroment
 .DS_Store
 

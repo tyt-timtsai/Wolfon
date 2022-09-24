@@ -15,8 +15,9 @@ async function create(req, res) {
     id,
     user_id: userData.id,
     author: userData.name,
+    author_photo: userData.photo || null,
     likes: [],
-    fellowers: [],
+    followers: [],
     view: 0,
     created_dt: createdDate,
     updated_dt: createdDate,
@@ -27,6 +28,7 @@ async function create(req, res) {
   };
   const result = await Post.create(postData);
   result.id = id;
+  await User.addUserPost(userData.id, result.id);
   res.status(200).json({ status: 200, message: 'success', data: result });
 }
 
@@ -56,11 +58,14 @@ async function get(req, res) {
 
       default:
         posts = await Post.getOne(+type);
+        if (!posts.value) {
+          return res.status(400).json({ status: 400, message: 'fail', data: 'Post Not Found' });
+        }
         userData = await User.get(posts.value.user_id);
+        userData.photo = +userData.photo;
         data = { post: posts.value, userData };
         break;
     }
-
     return res.status(200).json({ status: 200, message: 'success', data });
   } catch (error) {
     console.log('GET Post function error : ', error);
@@ -69,13 +74,6 @@ async function get(req, res) {
     return res.status(500).json({ status: 500, message: 'fail', data });
   }
 }
-
-// async function search(req, res) {
-//   const { keyword } = req.query;
-//   const regex = new RegExp(`${keyword}`, 'i');
-//   const posts = await Post.search(regex);
-//   res.status(200).json({ status: 200, message: 'successlllll', data: posts });
-// }
 
 async function like(req, res) {
   const postId = +req.params.id;
@@ -91,14 +89,14 @@ async function like(req, res) {
   res.status(200).json({ status: 200, message: 'success', data: token });
 }
 
-async function fellow(req, res) {
+async function follow(req, res) {
   const postId = +req.params.id;
   const auth = req.headers.authorization;
   const userData = await jwt.verify(auth, JWT_SECRET);
-  if (userData.fellow_posts.includes(postId)) {
-    await Post.unfellow(postId, userData.id);
+  if (userData.follow_posts.includes(postId)) {
+    await Post.unfollow(postId, userData.id);
   } else {
-    await Post.fellow(postId, userData.id);
+    await Post.follow(postId, userData.id);
   }
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
@@ -106,5 +104,5 @@ async function fellow(req, res) {
 }
 
 module.exports = {
-  get, create, like, fellow,
+  get, create, like, follow,
 };

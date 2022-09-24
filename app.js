@@ -12,6 +12,9 @@ const io = new Server(server, {
   // cors: true,
   cors: {
     origin: '*',
+    upgrades: ['websocket'],
+    pingInterval: 25000,
+    pingTimeout: 20000,
   },
 });
 
@@ -29,6 +32,8 @@ io.on('connection', (socket) => {
   let userRoom;
   console.log(socket.id, 'connected');
   socket.on('join', (room, name) => {
+    console.log('join', room, name);
+    socket.join(room);
     socket.to(room).emit('viewer', socket.id, name);
   });
   // Transport Offer
@@ -43,7 +48,9 @@ io.on('connection', (socket) => {
 
   // Exchange ice candidate
   socket.on('ice_candidate', (room, data) => {
+    console.log(room);
     socket.to(room).emit('ice_candidate', data, socket.id);
+    socket.to(room).emit('test', data, socket.id);
   });
 
   // Version Control

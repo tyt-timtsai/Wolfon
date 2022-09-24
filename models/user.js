@@ -80,28 +80,28 @@ async function deletePendingFriend(userId, targetId) {
   return result;
 }
 
-async function addFellow(userId, targetId) {
+async function addFollow(userId, targetId) {
   const result = {};
   result.user = await db.users.updateOne(
     { id: userId },
-    { $addToSet: { fellows: targetId } },
+    { $addToSet: { follows: targetId } },
   );
-  result.terget = await db.users.updateOne(
+  result.target = await db.users.updateOne(
     { id: targetId },
-    { $addToSet: { fellowers: userId } },
+    { $addToSet: { followers: userId } },
   );
   return result;
 }
 
-async function deleteFellow(userId, targetId) {
+async function deleteFollow(userId, targetId) {
   const result = {};
   result.user = await db.users.updateOne(
     { id: userId },
-    { $pull: { fellows: targetId } },
+    { $pull: { follows: targetId } },
   );
-  result.terget = await db.users.updateOne(
+  result.target = await db.users.updateOne(
     { id: targetId },
-    { $pull: { fellowers: userId } },
+    { $pull: { followers: userId } },
   );
   return result;
 }
@@ -111,13 +111,57 @@ async function getUserLive(userId) {
   return result;
 }
 
+async function addUserLive(userId, roomId) {
+  const result = await db.users.updateOne(
+    { id: userId },
+    { $addToSet: { lives: roomId } },
+  );
+  return result;
+}
+
 async function getUserPost(userId) {
   const result = await db.posts.find({ user_id: userId }).toArray();
   return result;
 }
 
+async function getUserLikePost(postId) {
+  const result = await db.posts.findOne({ id: postId });
+  return result;
+}
+
+async function getUserFollowPost(postId) {
+  const result = await db.posts.findOne({ id: postId });
+  return result;
+}
+
+async function addUserPost(userId, postId) {
+  const result = await db.users.updateOne(
+    { user_id: userId },
+    { $addToSet: { posts: postId } },
+  );
+  return result;
+}
+
 async function getUserFriend(userId) {
   const result = await db.users.findOne({ user_id: userId });
+  return result;
+}
+
+async function updateUserAvatar(userId, imagePath) {
+  const result = await db.users.updateOne(
+    { id: userId },
+    { $set: { photo: imagePath } },
+    { upsert: true },
+  );
+  return result;
+}
+
+async function updateUserBackgroundImage(userId, imagePath) {
+  const result = await db.users.updateOne(
+    { id: userId },
+    { $set: { background_image: imagePath } },
+    { upsert: true },
+  );
   return result;
 }
 
@@ -137,10 +181,16 @@ module.exports = {
   deleteApplyFriend,
   addPendingFriend,
   deletePendingFriend,
-  addFellow,
-  deleteFellow,
+  addFollow,
+  deleteFollow,
   getUserLive,
   getUserPost,
+  getUserLikePost,
+  getUserFollowPost,
   getUserFriend,
   getUserCommunity,
+  addUserLive,
+  addUserPost,
+  updateUserAvatar,
+  updateUserBackgroundImage,
 };

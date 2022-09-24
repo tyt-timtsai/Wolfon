@@ -37,18 +37,30 @@ async function unlike(postId, userId) {
   return result;
 }
 
-async function fellow(postId, userId) {
-  await db.posts.updateOne({ id: postId }, { $addToSet: { fellowers: userId } });
-  const result = await db.users.updateOne({ id: userId }, { $addToSet: { fellow_posts: postId } });
+async function follow(postId, userId) {
+  await db.posts.updateOne({ id: postId }, { $addToSet: { followers: userId } });
+  const result = await db.users.updateOne({ id: userId }, { $addToSet: { follow_posts: postId } });
   return result;
 }
 
-async function unfellow(postId, userId) {
-  await db.posts.updateOne({ id: postId }, { $pull: { fellowers: userId } });
-  const result = await db.users.updateOne({ id: userId }, { $pull: { fellow_posts: postId } });
+async function unfollow(postId, userId) {
+  await db.posts.updateOne(
+    { id: postId },
+    { $pull: { followers: userId } },
+  );
+  const result = await db.users.updateOne({ id: userId }, { $pull: { follow_posts: postId } });
+  return result;
+}
+
+async function updateAuthorAvatar(userId, imagePath) {
+  const result = await db.posts.updateMany(
+    { user_id: userId },
+    { $set: { author_photo: imagePath } },
+    { upsert: true },
+  );
   return result;
 }
 
 module.exports = {
-  get, search, getOne, getAll, create, like, unlike, fellow, unfellow,
+  get, search, getOne, getAll, create, like, unlike, follow, unfollow, updateAuthorAvatar,
 };

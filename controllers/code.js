@@ -30,7 +30,15 @@ async function compile(req, res) {
   await fsPromises.mkdir(`./code/${id}`, { recursive: true });
   await fsPromises.writeFile(`./code/${id}/code.${extension}`, code);
   try {
-    const { stdout } = await exec(`docker run --name ${id} -v $(pwd)/code/${id}:/code --rm runtime-${language}`);
+    const { stdout } = await exec(
+      `docker run \
+      --name ${id} \
+      --cpus=".05" \
+      --memory=7m \
+      --memory-swap=0 \
+      -v $(pwd)/code/${id}:/code \
+      --rm runtime-${language}`,
+    );
     log = stdout;
     res.status(200).send(log);
     console.log('Compile finished.');
