@@ -5,8 +5,21 @@ async function get() {
   return result;
 }
 
+async function getOne(roomId) {
+  const result = await db.lives.findOne({ room_id: roomId });
+  return result;
+}
+
 async function create(liveData) {
   const result = await db.lives.insertOne(liveData);
+  return result;
+}
+
+async function end(roomId) {
+  const result = await db.lives.updateOne(
+    { room_id: roomId },
+    { $set: { isStreaming: false } },
+  );
   return result;
 }
 
@@ -25,6 +38,27 @@ async function addRecordUrl(roomId, url) {
   return result;
 }
 
+async function uploadScreenshot(roomId, data) {
+  const result = await db.lives.updateOne({ room_id: roomId }, { $push: { images: data } });
+  return result;
+}
+
+async function updateStreamerAvatar(userId, imagePath) {
+  const result = await db.lives.updateMany(
+    { user_id: userId },
+    { $set: { streamer_photo: imagePath } },
+  );
+  return result;
+}
+
 module.exports = {
-  get, create, searchById, searchByTitle, addRecordUrl,
+  get,
+  getOne,
+  create,
+  end,
+  searchById,
+  searchByTitle,
+  addRecordUrl,
+  uploadScreenshot,
+  updateStreamerAvatar,
 };

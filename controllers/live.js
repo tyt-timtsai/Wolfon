@@ -16,7 +16,14 @@ function signRoomId() {
 }
 
 async function get(req, res) {
-  const liveData = await Live.get();
+  let liveData;
+  console.log(req.query.id);
+  if (req.query.id) {
+    liveData = await Live.getOne(req.query.id);
+    console.log(liveData);
+  } else {
+    liveData = await Live.get();
+  }
   res.status(200).json({ status: 200, message: 'success', liveData });
 }
 
@@ -39,6 +46,7 @@ async function create(req, res) {
   const liveData = {
     user_id: userData.id,
     streamer: userData.name,
+    streamer_photo: userData.photo || null,
     title,
     language,
     room_id: roomId,
@@ -48,7 +56,7 @@ async function create(req, res) {
     view: 0,
     // cover_img: `${IMG_ENDPOINT}${s3Result.Key}`,
     cover_img: s3Result.Key,
-    img: req.file.filename,
+    images: [],
     chats: [
       {
         sender: 'system',
@@ -58,12 +66,8 @@ async function create(req, res) {
     ],
     total_message: 1,
   };
-  const result = await Live.create(liveData);
-  console.log(result);
-  console.log(userData.id);
-  console.log(roomId);
-  const userResult = await User.addUserLive(userData.id, roomId);
-  console.log(userResult);
+  await Live.create(liveData);
+  await User.addUserLive(userData.id, roomId);
   return res.status(200).json({ status: 200, message: 'success', liveData });
 }
 
@@ -76,6 +80,20 @@ async function search(req, res) {
   } else {
     const regex = new RegExp(`${keyword}`, 'i');
     data = await Live.searchByTitle(regex);
+  }
+  res.status(200).json({ status: 200, message: 'success', data });
+}
+
+async function uploadScreenshot(req, res) {
+  const { userData } = req;
+  const { roomId } = req.body;
+  let data;
+  try {
+    const s3Result = await s3LiveUpload(roomId, req.file);
+    data = { user: userData.id, url: s3Result.Key };
+    await Live.uploadScreenshot(roomId, data);
+  } catch (error) {
+    console.log('upload screenshot error : ', error);
   }
   res.status(200).json({ status: 200, message: 'success', data });
 }
@@ -142,6 +160,7 @@ async function completeUpload(req, res) {
   console.log(url);
   try {
     await Live.addRecordUrl(roomId, url);
+    await Live.end(roomId);
   } catch (error) {
     console.log(error);
   }
@@ -150,5 +169,5 @@ async function completeUpload(req, res) {
 }
 
 module.exports = {
-  get, create, search, completeUpload, upload,
+  get, create, search, completeUpload, upload, uploadScreenshot,
 };

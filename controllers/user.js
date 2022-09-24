@@ -2,6 +2,7 @@ require('dotenv').config();
 const argon2 = require('argon2');
 const User = require('../models/user');
 const Post = require('../models/post');
+const Live = require('../models/live');
 const jwt = require('../utils/JWT');
 const { s3UserUpload, s3DeleteObject } = require('../utils/aws_s3');
 
@@ -84,18 +85,20 @@ async function uploadImage(req, res) {
       if (userData.photo) {
         await s3DeleteObject(userData.photo);
       }
-      await User.updateUserAvatar(userData.id, imagePath);
       // await Post.updateAuthorAvatar(userData.id, `${IMG_ENDPOINT}${imagePath}`);
+      await User.updateUserAvatar(userData.id, imagePath);
       await Post.updateAuthorAvatar(userData.id, imagePath);
+      await Live.updateStreamerAvatar(userData.id, imagePath);
       break;
 
     default:
       if (userData.photo) {
         await s3DeleteObject(userData.photo);
       }
-      await User.updateUserAvatar(userData.id, imagePath);
       // await Post.updateAuthorAvatar(userData.id, `${IMG_ENDPOINT}${imagePath}`);
+      await User.updateUserAvatar(userData.id, imagePath);
       await Post.updateAuthorAvatar(userData.id, imagePath);
+      await Live.updateStreamerAvatar(userData.id, imagePath);
       break;
   }
   const user = await User.get(userData.id);

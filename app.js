@@ -70,13 +70,13 @@ io.on('connection', (socket) => {
 
   // chat room
   socket.on('chat message', (msg) => {
-    io.emit('chat message', msg);
+    io.to(msg.room).emit('chat message', msg);
   });
 
   // Disconnect
   socket.on('disconnect', () => {
-    console.log(userRoom, socket.id, 'disconnect');
-    socket.to(userRoom).emit('bye', socket.id);
+    console.log(socket.id, 'disconnect');
+    socket.emit('bye', socket.id);
   });
 });
 
