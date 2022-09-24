@@ -29,7 +29,7 @@ app.use(cors());
  * Websocket
  */
 io.on('connection', (socket) => {
-  let userRoom;
+  // let userRoom;
   console.log(socket.id, 'connected');
   socket.on('join', (room, name) => {
     console.log('join', room, name);
