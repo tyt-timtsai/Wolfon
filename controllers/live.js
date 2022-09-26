@@ -68,6 +68,7 @@ async function create(req, res) {
   };
   await Live.create(liveData);
   await User.addUserLive(userData.id, roomId);
+  console.log(liveData);
   return res.status(200).json({ status: 200, message: 'success', liveData });
 }
 
