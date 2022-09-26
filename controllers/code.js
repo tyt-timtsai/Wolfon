@@ -30,6 +30,14 @@ async function compile(req, res) {
   await fsPromises.mkdir(`./code/${id}`, { recursive: true });
   await fsPromises.writeFile(`./code/${id}/code.${extension}`, code);
   try {
+    setTimeout(() => {
+      if (log == null) {
+        exec(`docker kill ${id}`);
+        log = 'ERROR : Request Over Time. Time limited : 10 second.';
+      }
+      return '';
+    }, 10000);
+
     const { stdout } = await exec(
       `docker run \
       --name ${id} \
@@ -39,22 +47,25 @@ async function compile(req, res) {
       -v $(pwd)/code/${id}:/code \
       --rm runtime-${language}`,
     );
+
     log = stdout;
-    res.status(200).send(log);
     console.log('Compile finished.');
+    return res.status(200).send(log);
   } catch (error) {
     console.log(error.stdout);
     if (error.stdout && error.stderr) {
       log = error.stdout + error.stderr;
-    } else {
+      return res.status(200).send(log);
+    } if (error.stderr) {
       log = error.stderr;
+    } else {
+      log = 'request over time';
     }
     return res.status(200).send(log);
   } finally {
     await fsPromises.rm(`./code/${id}/code.${extension}`);
     await fsPromises.rmdir(`./code/${id}`);
   }
-  return true;
 }
 
 async function addVersion(req, res) {

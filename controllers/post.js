@@ -62,7 +62,6 @@ async function get(req, res) {
           return res.status(400).json({ status: 400, message: 'fail', data: 'Post Not Found' });
         }
         userData = await User.get(posts.value.user_id);
-        userData.photo = +userData.photo;
         data = { post: posts.value, userData };
         break;
     }
