@@ -86,10 +86,10 @@ async function search(req, res) {
 }
 
 async function uploadScreenshot(req, res) {
-  const { userData } = req;
-  const { roomId } = req.body;
   let data;
   try {
+    const { userData } = req;
+    const { roomId } = req.body;
     const s3Result = await s3LiveUpload(roomId, req.file);
     data = { user: userData.id, url: s3Result.Key };
     await Live.uploadScreenshot(roomId, data);
