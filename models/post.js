@@ -56,7 +56,7 @@ async function updateAuthorAvatar(userId, imagePath) {
   const result = await db.posts.updateMany(
     { user_id: userId },
     { $set: { author_photo: imagePath } },
-    { upsert: true },
+    { upsert: false },
   );
   return result;
 }
