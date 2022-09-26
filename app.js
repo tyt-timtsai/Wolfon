@@ -11,7 +11,7 @@ const { Server } = require('socket.io');
 const io = new Server(server, {
   // cors: true,
   cors: {
-    origin: '*',
+    origin: ['https://wolfon.live', 'https://www.wolfon.live', 'http://localhost:3001'],
     upgrades: ['websocket'],
     pingInterval: 25000,
     pingTimeout: 20000,
