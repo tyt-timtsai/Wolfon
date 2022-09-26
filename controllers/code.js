@@ -41,8 +41,8 @@ async function compile(req, res) {
     const { stdout } = await exec(
       `docker run \
       --name ${id} \
-      --cpus=".05" \
-      --memory=7m \
+      --cpus=".2" \
+      --memory=10m \
       --memory-swap=0 \
       -v $(pwd)/code/${id}:/code \
       --rm runtime-${language}`,
