@@ -56,10 +56,9 @@ async function compile(req, res) {
     if (error.stdout && error.stderr) {
       log = error.stdout + error.stderr;
       return res.status(200).send(log);
-    } if (error.stderr) {
+    }
+    if (error.stderr) {
       log = error.stderr;
-    } else {
-      log = 'request over time';
     }
     return res.status(200).send(log);
   } finally {
