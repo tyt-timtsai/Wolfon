@@ -41,8 +41,8 @@ async function compile(req, res) {
     const { stdout } = await exec(
       `docker run \
       --name ${id} \
-      --cpus=".05" \
-      --memory=7m \
+      --cpus=".25" \
+      --memory=10m \
       --memory-swap=0 \
       -v $(pwd)/code/${id}:/code \
       --rm runtime-${language}`,
@@ -56,10 +56,9 @@ async function compile(req, res) {
     if (error.stdout && error.stderr) {
       log = error.stdout + error.stderr;
       return res.status(200).send(log);
-    } if (error.stderr) {
+    }
+    if (error.stderr) {
       log = error.stderr;
-    } else {
-      log = 'request over time';
     }
     return res.status(200).send(log);
   } finally {

@@ -86,12 +86,15 @@ async function search(req, res) {
 }
 
 async function uploadScreenshot(req, res) {
-  const { userData } = req;
-  const { roomId } = req.body;
   let data;
   try {
+    const { userData } = req;
+    const { roomId } = req.body;
+    console.log(userData);
+    console.log(roomId);
     const s3Result = await s3LiveUpload(roomId, req.file);
     data = { user: userData.id, url: s3Result.Key };
+    console.log(data);
     await Live.uploadScreenshot(roomId, data);
   } catch (error) {
     console.log('upload screenshot error : ', error);

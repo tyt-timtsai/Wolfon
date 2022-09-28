@@ -1,10 +1,11 @@
 const JWT = require('jsonwebtoken');
 
 const algorithm = 'HS256';
+const expiresIn = '10h';
 
 function sign(payload, secret) {
   return new Promise((resolve, reject) => {
-    JWT.sign(payload, secret, { algorithm }, (err, token) => {
+    JWT.sign(payload, secret, { algorithm, expiresIn }, (err, token) => {
       if (err) {
         console.log('JWT sign error : ', err);
         return reject(err);
