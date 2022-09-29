@@ -1,19 +1,39 @@
 require('dotenv').config();
 const argon2 = require('argon2');
+const JSValidator = require('validator');
 const User = require('../models/user');
 const Post = require('../models/post');
 const Live = require('../models/live');
 const jwt = require('../utils/JWT');
 const { s3UserUpload, s3DeleteObject } = require('../utils/aws_s3');
 
-const { JWT_SECRET, IMG_ENDPOINT } = process.env;
+const validator = JSValidator.default;
+const { JWT_SECRET } = process.env;
 
 async function signUp(req, res) {
   const { name, email, password } = req.body.data;
+
+  // Data Validation
+  if (validator.isEmpty(name)) {
+    return res.status(400).json({ status: 400, message: '請填寫名字' });
+  }
+  if (validator.isEmpty(email)) {
+    return res.status(400).json({ status: 400, message: '請填寫信箱' });
+  }
+  if (validator.isEmpty(password)) {
+    return res.status(400).json({ status: 400, message: '請填寫密碼' });
+  }
+  if (!validator.isEmail(email)) {
+    return res.status(400).json({ status: 400, message: '信箱格式錯誤' });
+  }
+
+  // Check Exist
   const exist = await User.signIn(email);
   if (exist != null) {
-    return res.status(401).json({ status: 401, message: 'Email is already registed.' });
+    return res.status(401).json({ status: 401, message: '信箱已被註冊' });
   }
+
+  // Prepare Data
   const photo = req.body.file || null;
   const id = Math.floor(Math.random() * 1000000);
   const createdDate = (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -5);
@@ -36,17 +56,30 @@ async function signUp(req, res) {
     like_posts: [],
     follow_posts: [],
   };
+
+  // Sign up
   await User.signUp(userData);
   const token = await jwt.sign(userData, JWT_SECRET);
   return res.status(200).json({ status: 200, message: 'success', data: token });
 }
 
 async function signIn(req, res) {
+  // Prepare Data
   const { email, password } = req.body.data;
   const userData = await User.signIn(email);
-  if (userData == null) {
-    return res.status(404).json({ status: 404, message: 'User not found' });
+
+  // Data Validation
+  if (validator.isEmpty(email)) {
+    return res.status(400).json({ status: 400, message: '請填寫信箱' });
   }
+  if (validator.isEmpty(password)) {
+    return res.status(400).json({ status: 400, message: '請填寫密碼' });
+  }
+  if (userData == null) {
+    return res.status(401).json({ status: 401, message: '信箱尚未註冊' });
+  }
+
+  // Sign in
   try {
     if (await argon2.verify(userData.password, password)) {
       const token = await jwt.sign(userData, JWT_SECRET);
@@ -60,20 +93,25 @@ async function signIn(req, res) {
 }
 
 async function profile(req, res) {
+  // get other user profile
   if (req.body.id) {
     const userData = await User.get(+req.body.id);
-    // userData.background_image = IMG_ENDPOINT + userData.background_image;
-    // userData.photo = IMG_ENDPOINT + userData.photo;
     return res.status(200).json({ status: 200, message: 'success', data: userData });
   }
+
+  // get Personal profile
   return res.status(200).json({ status: 200, message: 'success', data: req.userData });
 }
 
 async function uploadImage(req, res) {
+  // Prepare Data
   const { userData } = req;
   const { type } = req.body;
+
+  // Upload to S3
   const result = await s3UserUpload(userData.email, req.file);
   const imagePath = result.Key;
+  // Update User Data
   switch (type) {
     case 'background':
       if (userData.background_image) {
@@ -85,7 +123,6 @@ async function uploadImage(req, res) {
       if (userData.photo) {
         await s3DeleteObject(userData.photo);
       }
-      // await Post.updateAuthorAvatar(userData.id, `${IMG_ENDPOINT}${imagePath}`);
       await User.updateUserAvatar(userData.id, imagePath);
       await Post.updateAuthorAvatar(userData.id, imagePath);
       await Live.updateStreamerAvatar(userData.id, imagePath);
@@ -95,15 +132,14 @@ async function uploadImage(req, res) {
       if (userData.photo) {
         await s3DeleteObject(userData.photo);
       }
-      // await Post.updateAuthorAvatar(userData.id, `${IMG_ENDPOINT}${imagePath}`);
       await User.updateUserAvatar(userData.id, imagePath);
       await Post.updateAuthorAvatar(userData.id, imagePath);
       await Live.updateStreamerAvatar(userData.id, imagePath);
       break;
   }
+
+  // Update JWT
   const user = await User.get(userData.id);
-  // user.background_image =  IMG_ENDPOINT + user.background_image;
-  // user.photo = IMG_ENDPOINT + user.photo;
   const data = await jwt.sign(user, JWT_SECRET);
   return res.status(200).json({ status: 200, message: 'success', data });
 }
@@ -116,12 +152,19 @@ async function search(req, res) {
 }
 
 async function applyFriend(req, res) {
+  // Prepare Data
   const { userData } = req;
+  const { id } = req.body;
+
+  // Data Validation
+  if (validator.isEmpty(id)) {
+    return res.status(400).json({ status: 400, message: 'Miss Data : id' });
+  }
   // Add apply_friends in applicant's data
-  await User.addApplyFriend(userData.id, req.body.id);
+  await User.addApplyFriend(userData.id, id);
 
   // Add pending_friends in target's data
-  await User.addPendingFriend(req.body.id, userData.id);
+  await User.addPendingFriend(id, userData.id);
 
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
@@ -129,35 +172,40 @@ async function applyFriend(req, res) {
 }
 
 async function acceptFriend(req, res) {
+  // Prepare Data
   const { userData } = req;
+  const { id } = req.body;
 
   // Add friends in user's and applicant's data
-  await User.addFriend(userData.id, req.body.id);
+  await User.addFriend(userData.id, id);
 
   // Delete pending_friends in data
-  await User.deletePendingFriend(userData.id, req.body.id);
+  await User.deletePendingFriend(userData.id, id);
 
   // Delete apply_friend in applicant's data
-  await User.deleteApplyFriend(req.body.id, userData.id);
+  await User.deleteApplyFriend(id, userData.id);
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
   return res.status(200).json({ status: 200, message: 'success', data: token });
 }
 
 async function deleteFriend(req, res) {
+  // Prepare Data
   const { userData } = req;
+  const { id } = req.body;
 
   // Delete friends in both user's data
-  await User.deleteFriend(userData.id, req.body.id);
+  await User.deleteFriend(userData.id, id);
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
   return res.status(200).json({ status: 200, message: 'success', data: token });
 }
 
 async function cancelApplyFriend(req, res) {
+  // Prepare Data
+  const { id, action } = req.body;
   const { userData } = req;
 
-  const { id, action } = req.body;
   switch (action) {
     case 'cancel':
       await User.deleteApplyFriend(userData.id, id);
@@ -180,18 +228,23 @@ async function cancelApplyFriend(req, res) {
 }
 
 async function follow(req, res) {
+  // Prepare Data
   const { userData } = req;
+  const { id } = req.body;
 
   // Add follows & Add followers to target's data
-  await User.addFollow(userData.id, req.body.id);
+  await User.addFollow(userData.id, id);
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
   return res.status(200).json({ status: 200, message: 'success', data: token });
 }
 
 async function unfollow(req, res) {
+  // Prepare Data
   const { userData } = req;
-  await User.deleteFollow(userData.id, req.body.id);
+  const { id } = req.body;
+
+  await User.deleteFollow(userData.id, id);
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
   return res.status(200).json({ status: 200, message: 'success', data: token });
