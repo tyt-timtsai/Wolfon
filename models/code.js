@@ -56,6 +56,7 @@ async function getTag(roomId, tag) {
     {
       $project: {
         room: 1,
+        language: 1,
         tags: {
           $filter: {
             input: '$tags',

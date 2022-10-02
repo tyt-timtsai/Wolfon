@@ -30,13 +30,14 @@ async function compile(req, res) {
   await fsPromises.mkdir(`./code/${id}`, { recursive: true });
   await fsPromises.writeFile(`./code/${id}/code.${extension}`, code);
   try {
+    const time = 5000;
     setTimeout(() => {
       if (log == null) {
         exec(`docker kill ${id}`);
-        log = 'ERROR : Request Over Time. Time limited : 10 second.';
+        log = `ERROR : Request Over Time. Time limited : ${time / 1000} second.`;
       }
       return '';
-    }, 10000);
+    }, time);
 
     const { stdout } = await exec(
       `docker run \

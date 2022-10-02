@@ -56,10 +56,10 @@ async function addApplyFriend(userId, targetId) {
   return result;
 }
 
-async function deleteApplyFriend(targetId, userId) {
+async function deleteApplyFriend(userId, targetId) {
   const result = await db.users.updateOne(
-    { id: targetId },
-    { $pull: { apply_friends: userId } },
+    { id: userId },
+    { $pull: { apply_friends: targetId } },
   );
   return result;
 }
@@ -136,14 +136,14 @@ async function getUserFollowPost(postId) {
 
 async function addUserPost(userId, postId) {
   const result = await db.users.updateOne(
-    { user_id: userId },
+    { id: userId },
     { $addToSet: { posts: postId } },
   );
   return result;
 }
 
 async function getUserFriend(userId) {
-  const result = await db.users.findOne({ user_id: userId });
+  const result = await db.users.findOne({ id: userId });
   return result;
 }
 

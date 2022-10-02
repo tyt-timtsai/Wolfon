@@ -24,10 +24,14 @@ router.route('/live').post(User.getLive);
 
 router.route('/post').get(auth, User.getPost);
 router.route('/post').post(User.getPost);
+router.route('/like').get(auth, User.getLikePost);
 router.route('/like').post(User.getLikePost);
+router.route('/follow_post').get(auth, User.getFollowPost);
 router.route('/follow_post').post(User.getFollowPost);
 
 router.route('/friend').get(auth, User.getFriend);
+router.route('/follow').get(auth, User.getFollow);
+router.route('/follower').get(auth, User.getFollower);
 router.route('/follower').post(User.getFollower);
 router.route('/community').get(auth, User.getCommunity);
 

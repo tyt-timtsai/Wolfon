@@ -1,9 +1,8 @@
 require('dotenv').config();
 const { orderBy } = require('lodash');
-const { s3, s3LiveUpload } = require('../utils/aws_s3');
 const Live = require('../models/live');
 const User = require('../models/user');
-
+const { s3, s3LiveUpload } = require('../utils/aws_s3');
 // const { IMG_ENDPOINT } = process.env;
 
 function signRoomId() {
@@ -40,7 +39,6 @@ async function create(req, res) {
     // eslint-disable-next-line no-await-in-loop
     searchResult = await Live.searchById(roomId);
   }
-
   const s3Result = await s3LiveUpload(roomId, req.file);
 
   const liveData = {

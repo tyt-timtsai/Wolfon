@@ -29,7 +29,9 @@ async function create(req, res) {
   const result = await Post.create(postData);
   result.id = id;
   await User.addUserPost(userData.id, result.id);
-  res.status(200).json({ status: 200, message: 'success', data: result });
+  const updatedUserData = await User.get(userData.id);
+  const token = await jwt.sign(updatedUserData, JWT_SECRET);
+  res.status(200).json({ status: 200, message: 'success', data: { token, id } });
 }
 
 async function get(req, res) {
