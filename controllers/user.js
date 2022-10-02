@@ -98,9 +98,9 @@ async function profile(req, res) {
     const userData = await User.get(+req.body.id);
     return res.status(200).json({ status: 200, message: 'success', data: userData });
   }
-
+  const userData = await User.get(req.userData.id);
   // get Personal profile
-  return res.status(200).json({ status: 200, message: 'success', data: req.userData });
+  return res.status(200).json({ status: 200, message: 'success', data: userData });
 }
 
 async function uploadImage(req, res) {
@@ -155,9 +155,10 @@ async function applyFriend(req, res) {
   // Prepare Data
   const { userData } = req;
   const { id } = req.body;
-
+  console.log(userData);
+  console.log(id);
   // Data Validation
-  if (validator.isEmpty(id)) {
+  if (!id) {
     return res.status(400).json({ status: 400, message: 'Miss Data : id' });
   }
   // Add apply_friends in applicant's data
@@ -205,7 +206,7 @@ async function cancelApplyFriend(req, res) {
   // Prepare Data
   const { id, action } = req.body;
   const { userData } = req;
-
+  console.log(action);
   switch (action) {
     case 'cancel':
       await User.deleteApplyFriend(userData.id, id);
@@ -214,7 +215,6 @@ async function cancelApplyFriend(req, res) {
     case 'reject':
       await User.deleteApplyFriend(id, userData.id);
       await User.deletePendingFriend(userData.id, id);
-
       break;
 
     default:
@@ -250,10 +250,27 @@ async function unfollow(req, res) {
   return res.status(200).json({ status: 200, message: 'success', data: token });
 }
 
+async function getFollow(req, res) {
+  let targets;
+  const data = {};
+  if (req.body.id) {
+    const { id } = req.body;
+    const user = await User.get(id);
+    targets = user.follows;
+  } else {
+    targets = req.userData.follows;
+  }
+  const follows = targets.map((target) => User.get(target));
+  await Promise.all(follows).then((resolve) => {
+    data.follows = resolve;
+  }).catch((err) => console.log(err));
+  return res.status(200).json({ status: 200, message: 'success', data });
+}
+
 async function getFollower(req, res) {
   let targets;
   const data = {};
-  if (req.body) {
+  if (req.body.id) {
     const { id } = req.body;
     const user = await User.get(id);
     targets = user.followers;
@@ -386,6 +403,7 @@ module.exports = {
   getLikePost,
   getFollowPost,
   getFriend,
+  getFollow,
   getFollower,
   getCommunity,
 };
