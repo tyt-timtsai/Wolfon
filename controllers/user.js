@@ -1,11 +1,15 @@
 require('dotenv').config();
 const argon2 = require('argon2');
 const JSValidator = require('validator');
+const {
+  randomId,
+  createDate,
+  updateImage,
+  cancelApply,
+} = require('../service/user');
 const User = require('../models/user');
-const Post = require('../models/post');
-const Live = require('../models/live');
 const jwt = require('../utils/JWT');
-const { s3UserUpload, s3DeleteObject } = require('../utils/aws_s3');
+const { s3UserUpload } = require('../utils/aws_s3');
 
 const validator = JSValidator.default;
 const { JWT_SECRET } = process.env;
@@ -35,8 +39,8 @@ async function signUp(req, res) {
 
   // Prepare Data
   const photo = req.body.file || null;
-  const id = Math.floor(Math.random() * 1000000);
-  const createdDate = (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -5);
+  const id = randomId();
+  const createdDate = createDate();
   const hash = await argon2.hash(password);
 
   const userData = {
@@ -109,36 +113,12 @@ async function uploadImage(req, res) {
   // Prepare Data
   const { userData } = req;
   const { type } = req.body;
+  console.log(type);
 
   // Upload to S3
   const result = await s3UserUpload(userData.email, req.file);
   const imagePath = result.Key;
-  // Update User Data
-  switch (type) {
-    case 'background':
-      if (userData.background_image) {
-        await s3DeleteObject(userData.background_image);
-      }
-      await User.updateUserBackgroundImage(userData.id, imagePath);
-      break;
-    case 'avatar':
-      if (userData.photo) {
-        await s3DeleteObject(userData.photo);
-      }
-      await User.updateUserAvatar(userData.id, imagePath);
-      await Post.updateAuthorAvatar(userData.id, imagePath);
-      await Live.updateStreamerAvatar(userData.id, imagePath);
-      break;
-
-    default:
-      if (userData.photo) {
-        await s3DeleteObject(userData.photo);
-      }
-      await User.updateUserAvatar(userData.id, imagePath);
-      await Post.updateAuthorAvatar(userData.id, imagePath);
-      await Live.updateStreamerAvatar(userData.id, imagePath);
-      break;
-  }
+  await updateImage[type](userData, imagePath);
 
   // Update JWT
   const user = await User.get(userData.id);
@@ -162,10 +142,8 @@ async function applyFriend(req, res) {
   if (!id) {
     return res.status(400).json({ status: 400, message: 'Miss Data : id' });
   }
-  // Add apply_friends in applicant's data
+  // Add apply_friends & pending_friends in applicant's data
   await User.addApplyFriend(userData.id, id);
-
-  // Add pending_friends in target's data
   await User.addPendingFriend(id, userData.id);
 
   const updatedUserData = await User.get(userData.id);
@@ -181,11 +159,10 @@ async function acceptFriend(req, res) {
   // Add friends in user's and applicant's data
   await User.addFriend(userData.id, id);
 
-  // Delete pending_friends in data
+  // Delete pending_friends & apply_friend in data
   await User.deletePendingFriend(userData.id, id);
-
-  // Delete apply_friend in applicant's data
   await User.deleteApplyFriend(id, userData.id);
+
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
   return res.status(200).json({ status: 200, message: 'success', data: token });
@@ -208,20 +185,7 @@ async function cancelApplyFriend(req, res) {
   const { id, action } = req.body;
   const { userData } = req;
 
-  switch (action) {
-    case 'cancel':
-      await User.deleteApplyFriend(userData.id, id);
-      await User.deletePendingFriend(id, userData.id);
-      break;
-    case 'reject':
-      await User.deleteApplyFriend(id, userData.id);
-      await User.deletePendingFriend(userData.id, id);
-      break;
-
-    default:
-      console.log('lack of action');
-      break;
-  }
+  await cancelApply[action](userData.id, id);
 
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
@@ -303,15 +267,12 @@ async function getLive(req, res) {
 }
 
 async function getPost(req, res) {
-  let userId;
+  let data;
   if (req.body.id) {
-    const { id } = req.body;
-    userId = id;
+    data = await User.getUserPost(req.body.id);
   } else {
-    const { id } = req.userData;
-    userId = id;
+    data = await User.getUserPost(req.userData.id);
   }
-  const data = await User.getUserPost(userId);
   return res.status(200).json({ status: 200, message: 'success', data });
 }
 
@@ -325,7 +286,9 @@ async function getLikePost(req, res) {
   } else {
     posts = req.userData.like_posts;
   }
+
   const postArray = posts.map((postId) => User.getUserLikePost(postId));
+
   try {
     data = await Promise.all(postArray);
   } catch (error) {
@@ -341,11 +304,12 @@ async function getFollowPost(req, res) {
     const { id } = req.body;
     const user = await User.get(id);
     posts = user.follow_posts;
-    console.log(posts);
   } else {
     posts = req.userData.follow_posts;
   }
+
   const postArray = posts.map((postId) => User.getUserFollowPost(postId));
+
   try {
     data = await Promise.all(postArray);
   } catch (error) {
