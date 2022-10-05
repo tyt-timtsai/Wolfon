@@ -5,44 +5,34 @@ const Code = require('../models/code');
 
 const fsPromises = fs.promises;
 
-// const codeExtension = {
-//   javascript: 'js',
-//   golang: 'go',
-//   python: 'py',
-// };
+const extensionMap = {
+  javascript: 'js',
+  golang: 'go',
+  python: 'py',
+};
 
-// const extension = codeExtension[language]
+function createRandomId() {
+  return `${`${Date.now()}`.slice(6, -1)}-${Math.floor(Math.random() * 100)}`;
+}
 
 async function compile(req, res) {
   const { language, code } = req.body;
-  const id = `${`${Date.now()}`.slice(6, -1)}-${Math.floor(Math.random() * 100)}`;
-  // let extension = " ";
-  // let log = " ";
-  let extension;
+  const id = createRandomId();
+
   let log;
+  const extension = extensionMap[language];
 
-  switch (language) {
-    case 'javascript':
-      extension = 'js';
-      break;
-    case 'golang':
-      extension = 'go';
-      break;
-    case 'python':
-      extension = 'py';
-      break;
-
-    default:
-      console.log('default');
-      return res.status(400).send('Not support language');
+  if (!extension) {
+    return res.status(400).send('Not support language');
   }
 
   await fsPromises.mkdir(`./code/${id}`, { recursive: true });
   await fsPromises.writeFile(`./code/${id}/code.${extension}`, code);
+
   try {
+    // catch time out & while (true) case
     const time = 5000;
     setTimeout(() => {
-      // catch error
       if (log == null) {
         exec(`docker kill ${id}`);
         log = `ERROR : Execute Over Time. \nTime limited : ${time / 1000} second.`;
@@ -61,17 +51,17 @@ async function compile(req, res) {
     );
 
     log = stdout;
+
     console.log('Compile finished.');
     return res.status(200).send(log);
   } catch (error) {
     console.log('compile error : ', error);
 
-    if (error.stdout && error.stderr) {
-      log = error.stdout + error.stderr;
-      return res.status(200).send(log);
+    if (error.stdout) {
+      log = error.stdout;
     }
     if (error.stderr) {
-      log = error.stderr;
+      log += error.stderr;
     }
 
     return res.status(200).send(log);
@@ -82,8 +72,8 @@ async function compile(req, res) {
 }
 
 async function addVersion(req, res) {
-  const { tag, code, language } = req.body;
   let result;
+  const { tag, code, language } = req.body;
   const schema = await Code.get(req.params.id);
   if (schema == null) {
     console.log('version not exist');
@@ -108,6 +98,7 @@ async function addVersion(req, res) {
     if (existTag.length > 0) {
       return res.status(400).json({ status: 400, message: 'Duplicate tag' });
     }
+
     result = await Code.add(req.params.id, tag, code, req.body.from || null);
 
     if (req.body.from) {
@@ -118,13 +109,13 @@ async function addVersion(req, res) {
 }
 
 async function getVersion(req, res) {
+  let data;
   if (req.query.tag) {
-    const data = await Code.getTag(req.params.id, req.query.tag);
-    console.log(data[0]);
-    return res.status(200).json({ status: 200, message: 'success', data: data[0] });
+    data = await Code.getTag(req.params.id, req.query.tag);
+  } else {
+    console.log('Get all versions');
+    data = await Code.getAll(req.params.id);
   }
-  console.log('Get all versions');
-  const data = await Code.getAll(req.params.id);
   return res.status(200).json({ status: 200, message: 'success', data });
 }
 

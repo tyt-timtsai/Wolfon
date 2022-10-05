@@ -1,8 +1,7 @@
 require('dotenv').config();
 const { Server } = require('socket.io');
-const { httpServer } = require('../app');
 
-const io = new Server(httpServer, {
+const io = new Server(server, {
   // cors: true,
   cors: {
     origin: ['https://wolfon.live', 'https://www.wolfon.live', 'http://localhost:3001'],
