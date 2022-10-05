@@ -5,9 +5,19 @@ const Code = require('../models/code');
 
 const fsPromises = fs.promises;
 
+// const codeExtension = {
+//   javascript: 'js',
+//   golang: 'go',
+//   python: 'py',
+// };
+
+// const extension = codeExtension[language]
+
 async function compile(req, res) {
   const { language, code } = req.body;
   const id = `${`${Date.now()}`.slice(6, -1)}-${Math.floor(Math.random() * 100)}`;
+  // let extension = " ";
+  // let log = " ";
   let extension;
   let log;
 
@@ -32,9 +42,10 @@ async function compile(req, res) {
   try {
     const time = 5000;
     setTimeout(() => {
+      // catch error
       if (log == null) {
         exec(`docker kill ${id}`);
-        log = `ERROR : Request Over Time. Time limited : ${time / 1000} second.`;
+        log = `ERROR : Execute Over Time. \nTime limited : ${time / 1000} second.`;
       }
       return '';
     }, time);
@@ -53,7 +64,8 @@ async function compile(req, res) {
     console.log('Compile finished.');
     return res.status(200).send(log);
   } catch (error) {
-    console.log(error.stdout);
+    console.log('compile error : ', error);
+
     if (error.stdout && error.stderr) {
       log = error.stdout + error.stderr;
       return res.status(200).send(log);
@@ -61,6 +73,7 @@ async function compile(req, res) {
     if (error.stderr) {
       log = error.stderr;
     }
+
     return res.status(200).send(log);
   } finally {
     await fsPromises.rm(`./code/${id}/code.${extension}`);
@@ -69,13 +82,12 @@ async function compile(req, res) {
 }
 
 async function addVersion(req, res) {
-  const {
-    tag, code, language,
-  } = req.body;
+  const { tag, code, language } = req.body;
   let result;
   const schema = await Code.get(req.params.id);
   if (schema == null) {
-    console.log('not exist');
+    console.log('version not exist');
+
     const codeData = {
       room: req.params.id,
       language,
@@ -87,17 +99,19 @@ async function addVersion(req, res) {
         },
       ],
     };
+
     result = await Code.create(codeData);
   } else {
-    console.log('exist');
+    console.log('version exist');
+
     const existTag = await Code.getTag(req.params.id, tag);
     if (existTag.length > 0) {
       return res.status(400).json({ status: 400, message: 'Duplicate tag' });
     }
     result = await Code.add(req.params.id, tag, code, req.body.from || null);
+
     if (req.body.from) {
-      const child = await Code.addChild(req.params.id, req.body.from, tag);
-      console.log(child);
+      await Code.addChild(req.params.id, req.body.from, tag);
     }
   }
   return res.status(200).json({ status: 200, message: 'success', result });

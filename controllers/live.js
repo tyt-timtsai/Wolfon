@@ -16,10 +16,9 @@ function signRoomId() {
 
 async function get(req, res) {
   let liveData;
-  console.log(req.query.id);
+
   if (req.query.id) {
     liveData = await Live.getOne(req.query.id);
-    console.log(liveData);
   } else {
     liveData = await Live.get();
   }
@@ -27,12 +26,12 @@ async function get(req, res) {
 }
 
 async function create(req, res) {
+  // Prepare Data
   const { userData } = req;
   const { title, language, tags } = req.body;
   const timeStamp = (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -5) + 800;
   let roomId = signRoomId();
   let searchResult = await Live.searchById(roomId);
-  console.log('roomId : ', roomId);
 
   while (searchResult && searchResult.room_id === roomId) {
     roomId = signRoomId();
@@ -52,7 +51,6 @@ async function create(req, res) {
     isStreaming: true,
     video_url: '',
     view: 0,
-    // cover_img: `${IMG_ENDPOINT}${s3Result.Key}`,
     cover_img: s3Result.Key,
     images: [],
     chats: [
@@ -71,15 +69,16 @@ async function create(req, res) {
 }
 
 async function search(req, res) {
-  const keyword = req.query.keyword || null;
   let data;
-  console.log(keyword);
+  const keyword = req.query.keyword || null;
+
   if (keyword === null || keyword === 'all') {
     data = await Live.get();
   } else {
     const regex = new RegExp(`${keyword}`, 'i');
     data = await Live.searchByTitle(regex);
   }
+
   res.status(200).json({ status: 200, message: 'success', data });
 }
 
@@ -88,11 +87,8 @@ async function uploadScreenshot(req, res) {
   try {
     const { userData } = req;
     const { roomId } = req.body;
-    console.log(userData);
-    console.log(roomId);
     const s3Result = await s3LiveUpload(roomId, req.file);
     data = { user: userData.id, url: s3Result.Key };
-    console.log(data);
     await Live.uploadScreenshot(roomId, data);
   } catch (error) {
     console.log('upload screenshot error : ', error);
@@ -134,6 +130,7 @@ async function upload(req, res) {
     signedUrl,
     PartNumber: index + 1,
   }));
+
   res.send({
     fileId: UploadId,
     fileKey: Key,
@@ -144,9 +141,11 @@ async function upload(req, res) {
 
 async function completeUpload(req, res) {
   console.log('in complete');
+
   const {
     fileId, fileKey, parts, roomId,
   } = req.body;
+
   const params = {
     Bucket: process.env.S3_BUCKET,
     Key: fileKey,
@@ -155,19 +154,19 @@ async function completeUpload(req, res) {
       Parts: orderBy(parts, ['PartNumber'], ['asc']),
     },
   };
+
   const completeMultipartUploadOutput = await s3.completeMultipartUpload(params).promise();
-  console.log(completeMultipartUploadOutput);
   const url = completeMultipartUploadOutput.Location;
-  console.log(roomId);
-  console.log(url);
+
   try {
     await Live.addRecordUrl(roomId, url);
     await Live.end(roomId);
   } catch (error) {
     console.log(error);
   }
-  res.status(200).send(completeMultipartUploadOutput);
+
   console.log('complete');
+  return res.status(200).send(completeMultipartUploadOutput);
 }
 
 module.exports = {
