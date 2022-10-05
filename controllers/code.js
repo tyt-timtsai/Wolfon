@@ -1,80 +1,28 @@
-const fs = require('fs');
-const util = require('util');
-const exec = util.promisify(require('child_process').exec);
 const Code = require('../models/code');
-
-const fsPromises = fs.promises;
-
-const extensionMap = {
-  javascript: 'js',
-  golang: 'go',
-  python: 'py',
-};
-
-function createRandomId() {
-  return `${`${Date.now()}`.slice(6, -1)}-${Math.floor(Math.random() * 100)}`;
-}
+const { randomContainerId, runTimeAdapter } = require('../service/code');
 
 async function compile(req, res) {
+  const id = randomContainerId();
   const { language, code } = req.body;
-  const id = createRandomId();
+  const program = runTimeAdapter[language];
 
-  let log;
-  const extension = extensionMap[language];
-
-  if (!extension) {
+  // Not support language
+  if (!program.extension) {
     return res.status(400).send('Not support language');
   }
 
-  await fsPromises.mkdir(`./code/${id}`, { recursive: true });
-  await fsPromises.writeFile(`./code/${id}/code.${extension}`, code);
-
-  try {
-    // catch time out & while (true) case
-    const time = 5000;
-    setTimeout(() => {
-      if (log == null) {
-        exec(`docker kill ${id}`);
-        log = `ERROR : Execute Over Time. \nTime limited : ${time / 1000} second.`;
-      }
-      return '';
-    }, time);
-
-    const { stdout } = await exec(
-      `docker run \
-      --name ${id} \
-      --cpus=".25" \
-      --memory=10m \
-      --memory-swap=0 \
-      -v $(pwd)/code/${id}:/code \
-      --rm runtime-${language}`,
-    );
-
-    log = stdout;
-
-    console.log('Compile finished.');
-    return res.status(200).send(log);
-  } catch (error) {
-    console.log('compile error : ', error);
-
-    if (error.stdout) {
-      log = error.stdout;
-    }
-    if (error.stderr) {
-      log += error.stderr;
-    }
-
-    return res.status(200).send(log);
-  } finally {
-    await fsPromises.rm(`./code/${id}/code.${extension}`);
-    await fsPromises.rmdir(`./code/${id}`);
-  }
+  // Inspect compile on over time case
+  const log = await program.compile(id, code);
+  console.log('Compile finished.');
+  return res.status(200).send(log);
 }
 
 async function addVersion(req, res) {
   let result;
   const { tag, code, language } = req.body;
   const schema = await Code.get(req.params.id);
+
+  // New version
   if (schema == null) {
     console.log('version not exist');
 
@@ -92,9 +40,7 @@ async function addVersion(req, res) {
 
     result = await Code.create(codeData);
   } else {
-    console.log('version exist');
-
-    // Duplicate case
+    // Find duplicate
     const existTag = await Code.getTag(req.params.id, tag);
     if (existTag.length > 0) {
       return res.status(400).json({ status: 400, message: 'Duplicate tag' });

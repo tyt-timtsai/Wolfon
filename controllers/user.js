@@ -94,13 +94,14 @@ async function signIn(req, res) {
 }
 
 async function profile(req, res) {
-  // get other user profile
+  let userData = '';
   if (req.body.id) {
-    const userData = await User.get(+req.body.id);
-    return res.status(200).json({ status: 200, message: 'success', data: userData });
+    // get other user profile
+    userData = await User.get(+req.body.id);
+  } else {
+    // get Personal profile
+    userData = await User.get(req.userData.id);
   }
-  const userData = await User.get(req.userData.id);
-  // get Personal profile
   return res.status(200).json({ status: 200, message: 'success', data: userData });
 }
 
@@ -370,22 +371,24 @@ async function getFriend(req, res) {
     }
   }
 
-  await Promise.all(pendingFriends).then((resolve) => {
-    data.pendingFriends = resolve;
-  }).catch((err) => console.log(err));
+  try {
+    await Promise.all(pendingFriends).then((resolve) => {
+      data.pendingFriends = resolve;
+    }).catch((err) => console.log(err));
 
-  await Promise.all(friends).then((resolve) => {
-    data.friends = resolve;
-  }).catch((err) => console.log(err));
+    await Promise.all(friends).then((resolve) => {
+      data.friends = resolve;
+    }).catch((err) => console.log(err));
 
-  console.log(data);
-
-  return res.status(200).json({ status: 200, message: 'success', data });
+    return res.status(200).json({ status: 200, message: 'success', data });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ status: 400, message: 'failed' });
+  }
 }
 
 async function getCommunity(req, res) {
   const { userData } = req;
-  // const data = await User.getUserLive(userData.id);
   const data = userData;
   return res.status(200).json({ status: 200, message: 'success', data });
 }
