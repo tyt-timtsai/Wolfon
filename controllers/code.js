@@ -94,13 +94,13 @@ async function addVersion(req, res) {
   } else {
     console.log('version exist');
 
+    // Duplicate case
     const existTag = await Code.getTag(req.params.id, tag);
     if (existTag.length > 0) {
       return res.status(400).json({ status: 400, message: 'Duplicate tag' });
     }
 
     result = await Code.add(req.params.id, tag, code, req.body.from || null);
-
     if (req.body.from) {
       await Code.addChild(req.params.id, req.body.from, tag);
     }
