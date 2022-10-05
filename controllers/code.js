@@ -1,10 +1,10 @@
 const Code = require('../models/code');
-const { randomContainerId, runTimeAdapter } = require('../service/code');
+const { randomContainerId, runTimeFactory } = require('../service/code');
 
 async function compile(req, res) {
   const id = randomContainerId();
   const { language, code } = req.body;
-  const program = runTimeAdapter[language];
+  const program = runTimeFactory[language];
 
   // Not support language
   if (!program.extension) {
