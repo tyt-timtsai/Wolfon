@@ -38,6 +38,7 @@ async function signUp(req, res) {
   const id = Math.floor(Math.random() * 1000000);
   const createdDate = (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -5);
   const hash = await argon2.hash(password);
+
   const userData = {
     id,
     name,
@@ -155,8 +156,7 @@ async function applyFriend(req, res) {
   // Prepare Data
   const { userData } = req;
   const { id } = req.body;
-  console.log(userData);
-  console.log(id);
+
   // Data Validation
   if (!id) {
     return res.status(400).json({ status: 400, message: 'Miss Data : id' });
@@ -206,7 +206,7 @@ async function cancelApplyFriend(req, res) {
   // Prepare Data
   const { id, action } = req.body;
   const { userData } = req;
-  console.log(action);
+
   switch (action) {
     case 'cancel':
       await User.deleteApplyFriend(userData.id, id);
@@ -253,6 +253,7 @@ async function unfollow(req, res) {
 async function getFollow(req, res) {
   let targets;
   const data = {};
+
   if (req.body.id) {
     const { id } = req.body;
     const user = await User.get(id);
@@ -260,6 +261,7 @@ async function getFollow(req, res) {
   } else {
     targets = req.userData.follows;
   }
+
   const follows = targets.map((target) => User.get(target));
   await Promise.all(follows).then((resolve) => {
     data.follows = resolve;
@@ -270,6 +272,7 @@ async function getFollow(req, res) {
 async function getFollower(req, res) {
   let targets;
   const data = {};
+
   if (req.body.id) {
     const { id } = req.body;
     const user = await User.get(id);
@@ -277,6 +280,7 @@ async function getFollower(req, res) {
   } else {
     targets = req.userData.followers;
   }
+
   const followers = targets.map((target) => User.get(target));
   await Promise.all(followers).then((resolve) => {
     data.followers = resolve;
@@ -382,7 +386,7 @@ async function getFriend(req, res) {
 async function getCommunity(req, res) {
   const { userData } = req;
   // const data = await User.getUserLive(userData.id);
-  const data = 'community';
+  const data = userData;
   return res.status(200).json({ status: 200, message: 'success', data });
 }
 

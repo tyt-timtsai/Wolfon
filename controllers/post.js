@@ -6,10 +6,10 @@ const jwt = require('../utils/JWT');
 const { JWT_SECRET } = process.env;
 
 async function create(req, res) {
+  // Prepare Data
   const { userData } = req;
   const createdDate = (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -5);
   const id = Math.floor(Math.random() * 1000000);
-
   const { title, subtitle, content } = req.body.data;
   const postData = {
     id,
@@ -26,12 +26,14 @@ async function create(req, res) {
     content,
     comments: [],
   };
+
   const result = await Post.create(postData);
   result.id = id;
   await User.addUserPost(userData.id, result.id);
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
-  res.status(200).json({ status: 200, message: 'success', data: { token, id } });
+
+  return res.status(200).json({ status: 200, message: 'success', data: { token, id } });
 }
 
 async function get(req, res) {
@@ -43,6 +45,7 @@ async function get(req, res) {
   }
   let regex;
   let data;
+
   try {
     switch (type) {
       case 'all':
@@ -67,6 +70,7 @@ async function get(req, res) {
         data = { post: posts.value, userData };
         break;
     }
+
     return res.status(200).json({ status: 200, message: 'success', data });
   } catch (error) {
     console.log('GET Post function error : ', error);
@@ -87,7 +91,7 @@ async function like(req, res) {
   }
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
-  res.status(200).json({ status: 200, message: 'success', data: token });
+  return res.status(200).json({ status: 200, message: 'success', data: token });
 }
 
 async function follow(req, res) {
@@ -101,7 +105,7 @@ async function follow(req, res) {
   }
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
-  res.status(200).json({ status: 200, message: 'success', data: token });
+  return res.status(200).json({ status: 200, message: 'success', data: token });
 }
 
 module.exports = {

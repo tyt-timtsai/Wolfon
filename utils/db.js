@@ -1,17 +1,14 @@
 require('dotenv').config();
 
 const { DB_URI, DB_NAME } = process.env;
-// const { DB_USER, DB_PASS, DB_URL } = process.env;
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
 // mongodb 位置
-// const uri = `mongodb://${DB_USER}:${DB_PASS}@${DB_URL}/`;
 const uri = DB_URI;
 
 // 資料庫名
 
 // 連立一個 MongoClient
-// const client = new MongoClient(uri);
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,

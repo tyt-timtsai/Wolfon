@@ -13,8 +13,8 @@ const credentials = new AWS.Credentials({
 
 const s3 = new AWS.S3({
   credentials,
-  signatureVersion: 'v4',
   region: S3_REGION,
+  signatureVersion: 'v4',
   s3ForcePathStyle: true,
 });
 
