@@ -46,7 +46,7 @@ async function get(roomId) {
 }
 
 async function getTag(roomId, tag) {
-  const result = await db.codes.aggregate([
+  const [result] = await db.codes.aggregate([
     {
       $match: {
         room: roomId,
