@@ -42,7 +42,8 @@ async function addVersion(req, res) {
   } else {
     // Find duplicate
     const existTag = await Code.getTag(req.params.id, tag);
-    if (existTag.length > 0) {
+    console.log(existTag);
+    if (existTag) {
       return res.status(400).json({ status: 400, message: 'Duplicate tag' });
     }
 
