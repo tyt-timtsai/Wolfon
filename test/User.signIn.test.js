@@ -1,6 +1,7 @@
-const { expect } = require('chai');
+// const { expect } = require('chai');
 const supertest = require('supertest');
-const { signIn } = require('../controllers/user');
+const { describe, it } = require('mocha');
+// const { signIn } = require('../controllers/user');
 
 const api = supertest('http://localhost:3000/api/v1');
 
@@ -15,7 +16,7 @@ describe('POST /user/signin', () => {
         },
       })
       .expect(200)
-      .end((err, res) => {
+      .end((err) => {
         if (err) {
           done(err);
         } else {
@@ -34,7 +35,7 @@ describe('POST /user/signin', () => {
         },
       })
       .expect(403)
-      .end((err, res) => {
+      .end((err) => {
         if (err) {
           done(err);
         } else {
@@ -53,7 +54,7 @@ describe('POST /user/signin', () => {
         },
       })
       .expect(400)
-      .end((err, res) => {
+      .end((err) => {
         if (err) {
           done(err);
         } else {
@@ -72,7 +73,7 @@ describe('POST /user/signin', () => {
         },
       })
       .expect(400)
-      .end((err, res) => {
+      .end((err) => {
         if (err) {
           done(err);
         } else {
@@ -91,7 +92,7 @@ describe('POST /user/signin', () => {
         },
       })
       .expect(401)
-      .end((err, res) => {
+      .end((err) => {
         if (err) {
           done(err);
         } else {

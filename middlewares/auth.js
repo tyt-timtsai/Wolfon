@@ -4,7 +4,7 @@ const { JWT_SECRET } = process.env;
 
 async function auth(req, res, next) {
   const token = req.headers.authorization;
-  if (!auth || auth === 'null') {
+  if (!token || token == null) {
     return res.status(401).json({ status: 401, message: 'No Token' });
   }
   try {
