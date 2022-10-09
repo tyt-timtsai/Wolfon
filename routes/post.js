@@ -4,7 +4,11 @@ const { auth } = require('../middlewares/auth');
 
 router.route('/').post(auth, Post.create);
 
-router.route('/:id').get(Post.get);
+router
+  .route('/:id')
+  .get(Post.get)
+  .patch(auth, Post.update)
+  .delete(auth, Post.deletePost);
 
 router.route('/like/:id').get(auth, Post.like);
 

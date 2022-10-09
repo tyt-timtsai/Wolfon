@@ -32,6 +32,7 @@ async function signUp(req, res) {
   }
 
   // Check Exist
+  console.log(email);
   const exist = await User.signIn(email);
   if (exist != null) {
     return res.status(401).json({ status: 401, message: '信箱已被註冊' });
@@ -101,11 +102,15 @@ async function profile(req, res) {
   let userData = '';
   if (req.body.id) {
     // get other user profile
-    userData = await User.get(+req.body.id);
+    if (!validator.isMongoId(req.body.id)) {
+      return res.status(400).json({ status: 400, message: 'Wrong ID' });
+    }
+    userData = await User.get(req.body.id);
   } else {
     // get Personal profile
-    userData = await User.get(req.userData.id);
+    userData = await User.get(req.userData._id);
   }
+  delete userData.password;
   return res.status(200).json({ status: 200, message: 'success', data: userData });
 }
 
@@ -143,10 +148,22 @@ async function applyFriend(req, res) {
     return res.status(400).json({ status: 400, message: 'Miss Data : id' });
   }
   // Add apply_friends & pending_friends in applicant's data
-  await User.addApplyFriend(userData.id, id);
-  await User.addPendingFriend(id, userData.id);
+  await User.addApplyFriend(userData._id, id);
+  await User.addPendingFriend(id, userData._id);
 
-  const updatedUserData = await User.get(userData.id);
+  const updatedUserData = await User.get(userData._id);
+  const token = await jwt.sign(updatedUserData, JWT_SECRET);
+  return res.status(200).json({ status: 200, message: 'success', data: token });
+}
+
+async function cancelApplyFriend(req, res) {
+  // Prepare Data
+  const { id, action } = req.body;
+  const { userData } = req;
+
+  await cancelApply[action](userData._id, id);
+
+  const updatedUserData = await User.get(userData._id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
   return res.status(200).json({ status: 200, message: 'success', data: token });
 }
@@ -157,11 +174,11 @@ async function acceptFriend(req, res) {
   const { id } = req.body;
 
   // Add friends in user's and applicant's data
-  await User.addFriend(userData.id, id);
+  await User.addFriend(userData._id, id);
 
   // Delete pending_friends & apply_friend in data
-  await User.deletePendingFriend(userData.id, id);
-  await User.deleteApplyFriend(id, userData.id);
+  await User.deletePendingFriend(userData._id, id);
+  await User.deleteApplyFriend(id, userData._id);
 
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
@@ -174,20 +191,8 @@ async function deleteFriend(req, res) {
   const { id } = req.body;
 
   // Delete friends in both user's data
-  await User.deleteFriend(userData.id, id);
-  const updatedUserData = await User.get(userData.id);
-  const token = await jwt.sign(updatedUserData, JWT_SECRET);
-  return res.status(200).json({ status: 200, message: 'success', data: token });
-}
-
-async function cancelApplyFriend(req, res) {
-  // Prepare Data
-  const { id, action } = req.body;
-  const { userData } = req;
-
-  await cancelApply[action](userData.id, id);
-
-  const updatedUserData = await User.get(userData.id);
+  await User.deleteFriend(userData._id, id);
+  const updatedUserData = await User.get(userData._id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
   return res.status(200).json({ status: 200, message: 'success', data: token });
 }
@@ -198,8 +203,8 @@ async function follow(req, res) {
   const { id } = req.body;
 
   // Add follows & Add followers to target's data
-  await User.addFollow(userData.id, id);
-  const updatedUserData = await User.get(userData.id);
+  await User.addFollow(userData._id, id);
+  const updatedUserData = await User.get(userData._id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
   return res.status(200).json({ status: 200, message: 'success', data: token });
 }
@@ -209,8 +214,8 @@ async function unfollow(req, res) {
   const { userData } = req;
   const { id } = req.body;
 
-  await User.deleteFollow(userData.id, id);
-  const updatedUserData = await User.get(userData.id);
+  await User.deleteFollow(userData._id, id);
+  const updatedUserData = await User.get(userData._id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
   return res.status(200).json({ status: 200, message: 'success', data: token });
 }
@@ -254,15 +259,12 @@ async function getFollower(req, res) {
 }
 
 async function getLive(req, res) {
-  let userId;
+  let data;
   if (req.body.id) {
-    const { id } = req.body;
-    userId = id;
+    data = await User.getUserLive(req.body.id);
   } else {
-    const { id } = req.userData;
-    userId = id;
+    data = await User.getUserLive(req.userData._id);
   }
-  const data = await User.getUserLive(userId);
   return res.status(200).json({ status: 200, message: 'success', data });
 }
 
@@ -271,7 +273,7 @@ async function getPost(req, res) {
   if (req.body.id) {
     data = await User.getUserPost(req.body.id);
   } else {
-    data = await User.getUserPost(req.userData.id);
+    data = await User.getUserPost(req.userData._id);
   }
   return res.status(200).json({ status: 200, message: 'success', data });
 }
@@ -351,12 +353,6 @@ async function getFriend(req, res) {
   }
 }
 
-async function getCommunity(req, res) {
-  const { userData } = req;
-  const data = userData;
-  return res.status(200).json({ status: 200, message: 'success', data });
-}
-
 module.exports = {
   signUp,
   signIn,
@@ -376,5 +372,4 @@ module.exports = {
   getFriend,
   getFollow,
   getFollower,
-  getCommunity,
 };

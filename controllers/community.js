@@ -19,7 +19,7 @@ async function get(req, res) {
       break;
 
     default:
-      data = await Community.get(+req.params.id);
+      data = await Community.get(req.params.id);
       break;
   }
 
@@ -58,7 +58,7 @@ async function apply(req, res) {
   if (!req.params.id) {
     return res.status(404).json({ status: 404, message: 'Not found' });
   }
-  await Community.apply(+req.params.id, userData.id);
+  await Community.apply(req.params.id, userData.id);
   const updatedUserData = await User.get(userData.id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
   return res.status(200).json({ status: 200, message: 'success', data: token });

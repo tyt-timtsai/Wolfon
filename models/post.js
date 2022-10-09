@@ -1,7 +1,8 @@
+const { ObjectId } = require('mongodb');
 const db = require('../utils/db');
 
-async function get(userId) {
-  const result = await db.posts.find({ user_id: userId }).toArray();
+async function getUserPost(userId) {
+  const result = await db.posts.find({ user_id: ObjectId(userId) }).toArray();
   return result;
 }
 
@@ -11,7 +12,7 @@ async function search(keyword) {
 }
 
 async function getOne(postId) {
-  const result = await db.posts.findOneAndUpdate({ id: postId }, { $inc: { view: 1 } });
+  const result = await db.posts.findOneAndUpdate({ _id: ObjectId(postId) }, { $inc: { view: 1 } });
   return result;
 }
 
@@ -25,36 +26,81 @@ async function create(postData) {
   return result;
 }
 
+async function update(_id, title, subtitle, content, updated_dt) {
+  const result = await db.posts.updateOne({ _id: ObjectId(_id) }, {
+    $set: {
+      title, subtitle, content, updated_dt,
+    },
+  });
+  return result;
+}
+
+async function deletePost(_id) {
+  const result = await db.posts.deleteOne({ _id: ObjectId(_id) });
+  return result;
+}
+
 async function like(postId, userId) {
-  const result = await db.posts.updateOne({ id: postId }, { $addToSet: { likes: userId } });
-  await db.users.updateOne({ id: userId }, { $addToSet: { like_posts: postId } });
+  const result = await db.posts.updateOne(
+    {
+      _id: ObjectId(postId),
+    },
+    {
+      $addToSet: { likes: ObjectId(userId) },
+    },
+  );
+  await db.users.updateOne({
+    _id: ObjectId(userId),
+  }, {
+    $addToSet: { like_posts: ObjectId(postId) },
+  });
   return result;
 }
 
 async function unlike(postId, userId) {
-  const result = await db.posts.updateOne({ id: postId }, { $pull: { likes: userId } });
-  await db.users.updateOne({ id: userId }, { $pull: { like_posts: postId } });
+  const result = await db.posts.updateOne({
+    _id: ObjectId(postId),
+  }, {
+    $pull: { likes: ObjectId(userId) },
+  });
+  await db.users.updateOne({
+    _id: ObjectId(userId),
+  }, {
+    $pull: { like_posts: ObjectId(postId) },
+  });
   return result;
 }
 
 async function follow(postId, userId) {
-  await db.posts.updateOne({ id: postId }, { $addToSet: { followers: userId } });
-  const result = await db.users.updateOne({ id: userId }, { $addToSet: { follow_posts: postId } });
+  await db.posts.updateOne({
+    _id: ObjectId(postId),
+  }, {
+    $addToSet: { followers: ObjectId(userId) },
+  });
+  const result = await db.users.updateOne({
+    _id: ObjectId(userId),
+  }, {
+    $addToSet: { follow_posts: ObjectId(postId) },
+  });
   return result;
 }
 
 async function unfollow(postId, userId) {
   await db.posts.updateOne(
-    { id: postId },
-    { $pull: { followers: userId } },
+    { _id: ObjectId(postId) },
+    { $pull: { followers: ObjectId(userId) } },
   );
-  const result = await db.users.updateOne({ id: userId }, { $pull: { follow_posts: postId } });
+  const result = await db.users.updateOne({
+    _id: ObjectId(userId),
+  }, {
+    $pull: { follow_posts: ObjectId(postId) },
+  });
   return result;
 }
 
 async function updateAuthorAvatar(userId, imagePath) {
   const result = await db.posts.updateMany(
-    { user_id: userId },
+    { user_id: ObjectId(userId) },
     { $set: { author_photo: imagePath } },
     { upsert: false },
   );
@@ -62,5 +108,16 @@ async function updateAuthorAvatar(userId, imagePath) {
 }
 
 module.exports = {
-  get, search, getOne, getAll, create, like, unlike, follow, unfollow, updateAuthorAvatar,
+  getUserPost,
+  search,
+  getOne,
+  getAll,
+  create,
+  update,
+  deletePost,
+  like,
+  unlike,
+  follow,
+  unfollow,
+  updateAuthorAvatar,
 };

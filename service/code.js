@@ -16,16 +16,16 @@ class RunTime {
     await fsPromises.mkdir(`./code/${id}`, { recursive: true });
     await fsPromises.writeFile(`./code/${id}/code.${this.extension}`, code);
 
-    try {
-      const time = 5000;
-      setTimeout(() => {
-        if (log == null) {
-          exec(`docker kill ${id}`);
-          log = `ERROR : Execute Over Time. \nTime limited : ${time / 1000} seconds.`;
-        }
-        return '';
-      }, time);
+    const time = 5000;
+    const inspect = setTimeout(() => {
+      if (log == null) {
+        exec(`docker kill ${id}`);
+        log = `ERROR : Execute Over Time. \nTime limited : ${time / 1000} seconds.`;
+      }
+      return '';
+    }, time);
 
+    try {
       const { stdout } = await exec(
         `docker run \
         --name ${id} \
@@ -35,6 +35,7 @@ class RunTime {
         -v $(pwd)/code/${id}:/code \
         --rm runtime-${this.language}`,
       );
+      clearTimeout(inspect);
       return stdout;
     } catch (error) {
       if (error.stdout) {
@@ -43,6 +44,7 @@ class RunTime {
       if (error.stderr) {
         log += error.stderr;
       }
+      clearTimeout(inspect);
       return log;
     } finally {
       await fsPromises.rm(`./code/${id}/code.${this.extension}`);

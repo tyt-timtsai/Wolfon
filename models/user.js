@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const db = require('../utils/db');
 
 async function signUp(userData) {
@@ -11,7 +12,7 @@ async function signIn(email) {
 }
 
 async function get(id) {
-  const result = await db.users.findOne({ id });
+  const result = await db.users.findOne({ _id: ObjectId(id) });
   return result;
 }
 
@@ -23,13 +24,13 @@ async function search(keyword) {
 async function addFriend(userId, targetId) {
   const result = {};
   result.user = await db.users.updateOne(
-    { id: userId },
-    { $addToSet: { friends: targetId } },
+    { _id: ObjectId(userId) },
+    { $addToSet: { friends: ObjectId(targetId) } },
   );
 
   result.terget = await db.users.updateOne(
-    { id: targetId },
-    { $addToSet: { friends: userId } },
+    { _id: ObjectId(targetId) },
+    { $addToSet: { friends: ObjectId(userId) } },
   );
   return result;
 }
@@ -37,45 +38,45 @@ async function addFriend(userId, targetId) {
 async function deleteFriend(userId, targetId) {
   const result = {};
   result.user = await db.users.updateOne(
-    { id: userId },
-    { $pull: { friends: targetId } },
+    { _id: ObjectId(userId) },
+    { $pull: { friends: ObjectId(targetId) } },
   );
 
   result.terget = await db.users.updateOne(
-    { id: targetId },
-    { $pull: { friends: userId } },
+    { _id: ObjectId(targetId) },
+    { $pull: { friends: ObjectId(userId) } },
   );
   return result;
 }
 
 async function addApplyFriend(userId, targetId) {
   const result = await db.users.updateOne(
-    { id: userId },
-    { $addToSet: { apply_friends: targetId } },
+    { _id: ObjectId(userId) },
+    { $addToSet: { apply_friends: ObjectId(targetId) } },
   );
   return result;
 }
 
 async function deleteApplyFriend(userId, targetId) {
   const result = await db.users.updateOne(
-    { id: userId },
-    { $pull: { apply_friends: targetId } },
+    { _id: ObjectId(userId) },
+    { $pull: { apply_friends: ObjectId(targetId) } },
   );
   return result;
 }
 
 async function addPendingFriend(userId, targetId) {
   const result = await db.users.updateOne(
-    { id: userId },
-    { $addToSet: { pending_friends: targetId } },
+    { _id: ObjectId(userId) },
+    { $addToSet: { pending_friends: ObjectId(targetId) } },
   );
   return result;
 }
 
 async function deletePendingFriend(userId, targetId) {
   const result = await db.users.updateOne(
-    { id: userId },
-    { $pull: { pending_friends: targetId } },
+    { _id: ObjectId(userId) },
+    { $pull: { pending_friends: ObjectId(targetId) } },
   );
   return result;
 }
@@ -83,12 +84,12 @@ async function deletePendingFriend(userId, targetId) {
 async function addFollow(userId, targetId) {
   const result = {};
   result.user = await db.users.updateOne(
-    { id: userId },
-    { $addToSet: { follows: targetId } },
+    { _id: ObjectId(userId) },
+    { $addToSet: { follows: ObjectId(targetId) } },
   );
   result.target = await db.users.updateOne(
-    { id: targetId },
-    { $addToSet: { followers: userId } },
+    { _id: ObjectId(targetId) },
+    { $addToSet: { followers: ObjectId(userId) } },
   );
   return result;
 }
@@ -96,12 +97,12 @@ async function addFollow(userId, targetId) {
 async function deleteFollow(userId, targetId) {
   const result = {};
   result.user = await db.users.updateOne(
-    { id: userId },
-    { $pull: { follows: targetId } },
+    { _id: ObjectId(userId) },
+    { $pull: { follows: ObjectId(targetId) } },
   );
   result.target = await db.users.updateOne(
-    { id: targetId },
-    { $pull: { followers: userId } },
+    { _id: ObjectId(targetId) },
+    { $pull: { followers: ObjectId(userId) } },
   );
   return result;
 }
@@ -113,8 +114,16 @@ async function getUserLive(userId) {
 
 async function addUserLive(userId, roomId) {
   const result = await db.users.updateOne(
-    { id: userId },
+    { _id: ObjectId(userId) },
     { $addToSet: { lives: roomId } },
+  );
+  return result;
+}
+
+async function deleteUserLive(userId, liveId) {
+  const result = await db.users.updateOne(
+    { _id: ObjectId(userId) },
+    { $pull: { lives: ObjectId(liveId) } },
   );
   return result;
 }
@@ -125,31 +134,39 @@ async function getUserPost(userId) {
 }
 
 async function getUserLikePost(postId) {
-  const result = await db.posts.findOne({ id: postId });
+  const result = await db.posts.findOne({ _id: ObjectId(postId) });
   return result;
 }
 
 async function getUserFollowPost(postId) {
-  const result = await db.posts.findOne({ id: postId });
+  const result = await db.posts.findOne({ _id: ObjectId(postId) });
   return result;
 }
 
 async function addUserPost(userId, postId) {
   const result = await db.users.updateOne(
-    { id: userId },
-    { $addToSet: { posts: postId } },
+    { _id: ObjectId(userId) },
+    { $addToSet: { posts: ObjectId(postId) } },
+  );
+  return result;
+}
+
+async function deletePost(userId, postId) {
+  const result = await db.users.updateOne(
+    { _id: ObjectId(userId) },
+    { $pull: { posts: ObjectId(postId) } },
   );
   return result;
 }
 
 async function getUserFriend(userId) {
-  const result = await db.users.findOne({ id: userId });
+  const result = await db.users.findOne({ _id: ObjectId(userId) });
   return result;
 }
 
 async function updateUserAvatar(userId, imagePath) {
   const result = await db.users.updateOne(
-    { id: userId },
+    { _id: ObjectId(userId) },
     { $set: { photo: imagePath } },
     { upsert: true },
   );
@@ -158,7 +175,7 @@ async function updateUserAvatar(userId, imagePath) {
 
 async function updateUserBackgroundImage(userId, imagePath) {
   const result = await db.users.updateOne(
-    { id: userId },
+    { _id: ObjectId(userId) },
     { $set: { background_image: imagePath } },
     { upsert: true },
   );
@@ -166,7 +183,7 @@ async function updateUserBackgroundImage(userId, imagePath) {
 }
 
 async function getUserCommunity(userId) {
-  const result = await db.lives.find({ user_id: userId }).toArray();
+  const result = await db.lives.find({ user_id: ObjectId(userId) }).toArray();
   return result;
 }
 
@@ -191,6 +208,8 @@ module.exports = {
   getUserCommunity,
   addUserLive,
   addUserPost,
+  deletePost,
+  deleteUserLive,
   updateUserAvatar,
   updateUserBackgroundImage,
 };

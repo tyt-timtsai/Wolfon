@@ -16,16 +16,16 @@ const updateImage = {
     if (userData.background_image) {
       await s3DeleteObject(userData.background_image);
     }
-    await User.updateUserBackgroundImage(userData.id, imagePath);
+    await User.updateUserBackgroundImage(userData._id, imagePath);
   },
 
   async avatar(userData, imagePath) {
     if (userData.photo) {
       await s3DeleteObject(userData.photo);
     }
-    await User.updateUserAvatar(userData.id, imagePath);
-    await Post.updateAuthorAvatar(userData.id, imagePath);
-    await Live.updateStreamerAvatar(userData.id, imagePath);
+    await User.updateUserAvatar(userData._id, imagePath);
+    await Post.updateAuthorAvatar(userData._id, imagePath);
+    await Live.updateStreamerAvatar(userData._id, imagePath);
   },
 };
 
