@@ -73,7 +73,8 @@ async function signIn(req, res) {
   // Prepare Data
   const { email, password } = req.body.data;
   const userData = await User.signIn(email);
-
+  console.log(email);
+  console.log(password);
   // Data Validation
   if (validator.isEmpty(email)) {
     return res.status(400).json({ status: 400, message: '請填寫信箱' });
