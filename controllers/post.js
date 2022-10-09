@@ -17,6 +17,16 @@ async function create(req, res) {
   const { userData } = req;
   const date = createDate();
   const { title, subtitle, content } = req.body.data;
+  // Data Validation
+  if (validator.isEmpty(title)) {
+    return res.status(400).json({ status: 400, message: 'Require title' });
+  }
+  if (validator.isEmpty(subtitle)) {
+    return res.status(400).json({ status: 400, message: 'Require subtitle' });
+  }
+  if (validator.isEmpty(content)) {
+    return res.status(400).json({ status: 400, message: 'Require content' });
+  }
   const postData = {
     user_id: userData._id,
     author: userData.name,
@@ -40,49 +50,54 @@ async function create(req, res) {
   return res.status(200).json({ status: 200, message: 'success', data: { token, id: result.insertedId } });
 }
 
-async function get(req, res) {
-  const type = req.params.id;
-  let posts;
-  let userData;
-  if (req.headers.authorization) {
-    userData = await jwt.verify(req.headers.authorization, JWT_SECRET);
+async function getOne(req, res) {
+  const { id } = req.params;
+  if (!validator.isMongoId(id)) {
+    return res.status(400).json({ status: 400, message: 'No Found or Wrong ID' });
   }
-  let regex;
-  let data;
-
   try {
-    switch (type) {
-      case 'all':
-        data = await Post.getAll();
-        break;
-
-      case 'user':
-        data = await Post.getUserPost(userData._id);
-        break;
-
-      case 'search':
-        regex = new RegExp(`${req.query.keyword}`, 'i');
-        data = await Post.search(regex);
-        break;
-
-      default:
-        console.log(type);
-        posts = await Post.getOne(type);
-        if (!posts.value) {
-          return res.status(400).json({ status: 400, message: 'fail', data: 'Post Not Found' });
-        }
-        userData = await User.get(posts.value.user_id);
-        delete userData.password;
-        data = { post: posts.value, userData };
-        break;
+    const posts = await Post.getOne(id);
+    if (!posts.value) {
+      return res.status(400).json({ status: 400, message: 'fail', data: 'Post Not Found' });
     }
-
+    const userData = await User.get(posts.value.user_id);
+    delete userData.password;
+    const data = { post: posts.value, userData };
     return res.status(200).json({ status: 200, message: 'success', data });
   } catch (error) {
-    console.log('GET Post function error : ', error);
-    console.log('GET Post function type : ', type);
-    data = error;
-    return res.status(500).json({ status: 500, message: 'fail', data });
+    console.log(error);
+    return res.status(500).json({ status: 500, message: 'error' });
+  }
+}
+
+async function search(req, res) {
+  const { keyword } = req.query;
+  if (keyword == null || keyword === '') {
+    return res.status(400).json({ status: 400, message: 'Require keyword' });
+  }
+  const regex = new RegExp(`${keyword}`, 'i');
+  try {
+    const data = await Post.search(regex);
+    return res.status(200).json({ status: 200, message: 'success', data });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ status: 500, message: 'error' });
+  }
+}
+
+async function getUserPost(req, res) {
+  const { userData } = req;
+  const data = await Post.getUserPost(userData._id);
+  return res.status(200).json({ status: 200, message: 'success', data });
+}
+
+async function get(req, res) {
+  try {
+    const data = await Post.getAll();
+    return res.status(200).json({ status: 200, message: 'success', data });
+  } catch (error) {
+    console.log('GET All Post function error : ', error);
+    return res.status(500).json({ status: 500, message: 'fail', error });
   }
 }
 
@@ -94,6 +109,9 @@ async function update(req, res) {
   const updatedDate = createDate();
   if (validator.isEmpty(postId)) {
     return res.status(400).json({ status: 400, message: 'ID is empty!' });
+  }
+  if (!validator.isMongoId(postId)) {
+    return res.status(400).json({ status: 400, message: 'No Found or Wrong ID' });
   }
   if (validator.isEmpty(title)) {
     return res.status(400).json({ status: 400, message: 'Title is empty!' });
@@ -120,6 +138,9 @@ async function deletePost(req, res) {
   const { _id } = req.userData;
   if (validator.isEmpty(_id)) {
     return res.status(400).json({ status: 400, message: 'ID is empty!' });
+  }
+  if (!validator.isMongoId(id)) {
+    return res.status(400).json({ status: 400, message: 'No Found or Wrong ID' });
   }
   const post = await Post.getOne(id);
   console.log(post);
@@ -148,13 +169,15 @@ async function deletePost(req, res) {
 }
 
 async function like(req, res) {
-  const postId = req.params.id;
+  const { id } = req.params;
   const { userData } = req;
-  console.log(postId);
-  if (userData.like_posts.includes(postId)) {
-    await Post.unlike(postId, userData._id);
+  if (!validator.isMongoId(id)) {
+    return res.status(400).json({ status: 400, message: 'No Found or Wrong ID' });
+  }
+  if (userData.like_posts.includes(id)) {
+    await Post.unlike(id, userData._id);
   } else {
-    await Post.like(postId, userData._id);
+    await Post.like(id, userData._id);
   }
   const updatedUserData = await User.get(userData._id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
@@ -162,12 +185,15 @@ async function like(req, res) {
 }
 
 async function follow(req, res) {
-  const postId = req.params.id;
+  const { id } = req.params;
   const { userData } = req;
-  if (userData.follow_posts.includes(postId)) {
-    await Post.unfollow(postId, userData._id);
+  if (!validator.isMongoId(id)) {
+    return res.status(400).json({ status: 400, message: 'No Found or Wrong ID' });
+  }
+  if (userData.follow_posts.includes(id)) {
+    await Post.unfollow(id, userData._id);
   } else {
-    await Post.follow(postId, userData._id);
+    await Post.follow(id, userData._id);
   }
   const updatedUserData = await User.get(userData._id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
@@ -175,5 +201,5 @@ async function follow(req, res) {
 }
 
 module.exports = {
-  get, create, update, deletePost, like, follow,
+  get, getOne, getUserPost, search, create, update, deletePost, like, follow,
 };
