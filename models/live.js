@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const db = require('../utils/db');
 
 async function get() {
@@ -5,8 +6,8 @@ async function get() {
   return result;
 }
 
-async function getOne(roomId) {
-  const result = await db.lives.findOne({ room_id: roomId });
+async function getOne(_id) {
+  const result = await db.lives.findOne({ _id: ObjectId(_id) });
   return result;
 }
 
@@ -15,16 +16,21 @@ async function create(liveData) {
   return result;
 }
 
+async function deleteLive(_id) {
+  const result = await db.lives.deleteOne({ _id: ObjectId(_id) });
+  return result;
+}
+
 async function end(roomId) {
   const result = await db.lives.updateOne(
-    { room_id: roomId },
+    { _id: ObjectId(roomId) },
     { $set: { isStreaming: false } },
   );
   return result;
 }
 
 async function searchById(roomId) {
-  const result = await db.lives.findOne({ room_id: roomId });
+  const result = await db.lives.findOne({ id: roomId });
   return result;
 }
 
@@ -34,18 +40,18 @@ async function searchByTitle(keyword) {
 }
 
 async function addRecordUrl(roomId, url) {
-  const result = await db.lives.updateOne({ room_id: roomId }, { $set: { video_url: url } });
+  const result = await db.lives.updateOne({ _id: ObjectId(roomId) }, { $set: { video_url: url } });
   return result;
 }
 
 async function uploadScreenshot(roomId, data) {
-  const result = await db.lives.updateOne({ room_id: roomId }, { $push: { images: data } });
+  const result = await db.lives.updateOne({ _id: ObjectId(roomId) }, { $push: { images: data } });
   return result;
 }
 
 async function updateStreamerAvatar(userId, imagePath) {
   const result = await db.lives.updateMany(
-    { user_id: userId },
+    { user_id: ObjectId(userId) },
     { $set: { streamer_photo: imagePath } },
   );
   return result;
@@ -55,6 +61,7 @@ module.exports = {
   get,
   getOne,
   create,
+  deleteLive,
   end,
   searchById,
   searchByTitle,

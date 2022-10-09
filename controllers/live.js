@@ -2,8 +2,14 @@ require('dotenv').config();
 const { orderBy } = require('lodash');
 const Live = require('../models/live');
 const User = require('../models/user');
-const { s3, s3LiveUpload } = require('../utils/aws_s3');
-// const { IMG_ENDPOINT } = process.env;
+const jwt = require('../utils/JWT');
+const { s3, s3LiveUpload, s3DeleteObject } = require('../utils/aws_s3');
+
+const { JWT_SECRET } = process.env;
+
+function createDate() {
+  return (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -5);
+}
 
 function signRoomId() {
   let roomId = '';
@@ -29,19 +35,19 @@ async function create(req, res) {
   // Prepare Data
   const { userData } = req;
   const { title, language, tags } = req.body;
-  const timeStamp = (new Date()).toISOString().replace(/[^0-9]/g, '').slice(0, -5) + 800;
+  const timeStamp = createDate();
   let roomId = signRoomId();
   let searchResult = await Live.searchById(roomId);
-
+  console.log('searchResult : ', searchResult);
   while (searchResult && searchResult.room_id === roomId) {
     roomId = signRoomId();
     // eslint-disable-next-line no-await-in-loop
     searchResult = await Live.searchById(roomId);
   }
   const s3Result = await s3LiveUpload(roomId, req.file);
-
   const liveData = {
-    user_id: userData.id,
+    id: roomId,
+    user_id: userData._id,
     streamer: userData.name,
     streamer_photo: userData.photo || null,
     title,
@@ -52,6 +58,7 @@ async function create(req, res) {
     video_url: '',
     view: 0,
     cover_img: s3Result.Key,
+    created_dt: timeStamp,
     images: [],
     chats: [
       {
@@ -63,9 +70,29 @@ async function create(req, res) {
     total_message: 1,
   };
   await Live.create(liveData);
-  await User.addUserLive(userData.id, roomId);
-  console.log(liveData);
+  await User.addUserLive(userData._id, liveData._id);
   return res.status(200).json({ status: 200, message: 'success', liveData });
+}
+
+async function deleteLive(req, res) {
+  const { userData } = req;
+  const { id } = req.params;
+  console.log(id);
+  try {
+    const liveData = await Live.getOne(id);
+    await s3DeleteObject(liveData.cover_img);
+    if (liveData.video_url) {
+      await s3DeleteObject(liveData.video_url);
+    }
+    await Live.deleteLive(id);
+    await User.deleteUserLive(userData._id, id);
+    const updatedUserData = await User.get(userData._id);
+    const token = await jwt.sign(updatedUserData, JWT_SECRET);
+    res.status(200).json({ status: 200, message: 'success', data: token });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ status: 400, message: 'failed', error });
+  }
 }
 
 async function search(req, res) {
@@ -170,5 +197,5 @@ async function completeUpload(req, res) {
 }
 
 module.exports = {
-  get, create, search, completeUpload, upload, uploadScreenshot,
+  get, create, deleteLive, search, completeUpload, upload, uploadScreenshot,
 };

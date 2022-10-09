@@ -54,8 +54,9 @@ io.on('connection', (socket) => {
   });
 
   // Version Control
-  socket.on('addTag', (tag) => {
-    io.emit('addTag', tag);
+  socket.on('addTag', (tag, room) => {
+    console.log(room);
+    io.to(room).emit('addTag', tag);
   });
 
   // Get Viewer code
