@@ -12,7 +12,7 @@ async function auth(req, res, next) {
     return next();
   } catch (error) {
     console.log('auth middleware error : ', error);
-    return res.status(403).json({ status: 403, message: 'Unauthorization' });
+    return res.status(403).json({ status: 403, message: 'Unauthorized' });
   }
 }
 

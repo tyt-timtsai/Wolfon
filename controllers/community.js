@@ -76,7 +76,7 @@ async function confirmApply(req, res) {
   const isAdmin = communityData.admin.some((user) => user === userData.id);
 
   if (!isAdmin) {
-    return res.status(403).json({ status: 403, message: 'Unauthorization' });
+    return res.status(403).json({ status: 403, message: 'Unauthorized' });
   }
 
   await Community.confirmApply(+id, userData.id);

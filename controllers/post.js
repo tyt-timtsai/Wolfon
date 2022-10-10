@@ -124,6 +124,10 @@ async function update(req, res) {
   }
 
   try {
+    const postData = await Post.getOne(postId);
+    if (postData.user_id !== userData._id) {
+      return res.status(403).json({ status: 403, message: 'Unauthorized' });
+    }
     await Post.update(postId, title, subtitle, content, updatedDate);
   } catch (error) {
     console.log(error);
