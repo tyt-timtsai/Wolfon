@@ -51,6 +51,10 @@ Add badges from somewhere like: [shields.io](https://shields.io/)
 Provided a low latency live streaming service and interactive online code editor which can execution programs in JavaScript, Python, and Golang.
 
 After learning programs from live stream, there is a social media for user to publich their tech articles and reviews, writing with a rich text editor which support code block, image insertion and link href.<a name="demo"></a>
+
+## System Architecture
+![架構細節1-1](https://user-images.githubusercontent.com/81073535/195830529-42a86570-194e-4aea-b980-24467b09faac.png)
+
 ## Demo
 
 <a name="createLive"></a>
@@ -83,6 +87,7 @@ Insert gif or link to demo
 - Get code from viewer's editor with a simple click on button
 
 **Chatroom**
+
 - Many-to-many online chatroom
 - Image upload and preview
 - Zoom in image
