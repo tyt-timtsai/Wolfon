@@ -21,7 +21,7 @@ before((done) => {
       if (err) {
         done(err);
       } else {
-        token = res._body.data;
+        token = res.body.data;
         done();
       }
     });

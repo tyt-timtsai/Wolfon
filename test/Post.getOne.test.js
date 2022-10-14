@@ -7,7 +7,8 @@ const api = supertest('http://localhost:3000/api/v1');
 let token;
 
 before((done) => {
-  api.post('/user/signin')
+  api
+    .post('/user/signin')
     .set('Accept', 'application/json')
     .send({
       data: {
