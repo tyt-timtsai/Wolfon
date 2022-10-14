@@ -1,9 +1,32 @@
+
 # Wolfon
 
 Website : https://www.wolfon.live
 
 A website for **live streaming and learning programs**, combined with a **developer social media**.
 
+## Table of Content
+- [Introduction](#introduction)  
+- [Demo](#demo)  
+    **Live**
+    - [Create Live Stream](#createLive)
+    - [Join Live Stream](#joinLive)
+    - [Review Stream](#reviewLive)
+
+     **Code Editor**
+    - [Select Language](#selectCode)
+    - [Programming](#writeCode)
+    - [Get Code](#getCode)
+    - [Add a Version](#addCode)
+    - [Use Version](#useCode)
+
+    **Post**
+    - [Create Post](#createPost)
+    - [Join Post](#joinPost)
+    - [Edit Post](#editPost)
+    - [Like and Follow](#likePost)
+- [Features](#features)  
+- [Tech Stack](#techStack)  
 ## Badges
 
 Add badges from somewhere like: [shields.io](https://shields.io/)
@@ -18,25 +41,32 @@ Add badges from somewhere like: [shields.io](https://shields.io/)
 [MIT](https://choosealicense.com/licenses/mit/)
 
 
+<a name="introduction"></a>
 ## Introduction
 **Test account :**
-- Account_01: user_1@gmail.com / Password:  123456
-- Account_02: user_2@gmail.com / Password: 123456
+- Account_01 (Wolfon): user01@gmail.com / Password: 123456
+- Account_02 (Sam): user02@gmail.com / Password: 123456
 
 **Wolfon** is used for programs online learning, tech sharing and article publishing.
 Provided a low latency live streaming service and interactive online code editor which can execution programs in JavaScript, Python, and Golang.
 
-After learning programs from live stream, there is a social media for user to publich their tech article or reviews with a rich text editor which support code block, image insertion and link href.
+After learning programs from live stream, there is a social media for user to publich their tech articles and reviews, writing with a rich text editor which support code block, image insertion and link href.<a name="demo"></a>
 ## Demo
 
+<a name="createLive"></a>
 Insert gif or link to demo
 
-
-## Screenshots
-
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
-
-
+<a name="joinLive"></a>
+<a name="reviewLive"></a>
+<a name="selectCode"></a>
+<a name="writeCode"></a>
+<a name="getCode"></a>
+<a name="addCode"></a>
+<a name="useCode"></a>
+<a name="createPost"></a>
+<a name="joinPost"></a>
+<a name="editPost"></a>
+<a name="likePost"></a><a name="features"></a>
 ## Features
 
 **Live Streaming**
@@ -76,16 +106,16 @@ Insert gif or link to demo
 - Browsing personal followed and liked posts
 - Searching post, live, and user with short keyword
 - Change personal avatar and background image in profile
-- Sign-up and sign-in
+- Sign-up and sign-in<a name="techStack"></a>
 ## Tech Stack
 
 **Client:** WebRTC, MediaRecorder, React, MaterialUI, TipTap, React-Ace, Socket.IO
 
 **Server:** Node, Express, Docker, multer, aws-sdk, Socket.IO
 
-**Database:** MongoDB
+**Database:** MongoDB Atlas
 
-**Cloud service:** Amazon S3, Amazon EC2
+**Cloud service:** Amazon EC2, Amazon S3, Amazon CloudFront
 
 **Test:** mocha, chai, supertest
 
