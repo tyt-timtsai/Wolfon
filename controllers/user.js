@@ -117,7 +117,6 @@ async function uploadImage(req, res) {
   // Prepare Data
   const { userData } = req;
   const { type } = req.body;
-  console.log(type);
 
   // Upload to S3
   const result = await s3UserUpload(userData.email, req.file);
@@ -125,7 +124,7 @@ async function uploadImage(req, res) {
   await updateImage[type](userData, imagePath);
 
   // Update JWT
-  const user = await User.get(userData.id);
+  const user = await User.get(userData._id);
   const data = await jwt.sign(user, JWT_SECRET);
   return res.status(200).json({ status: 200, message: 'success', data });
 }
@@ -179,7 +178,7 @@ async function acceptFriend(req, res) {
   await User.deletePendingFriend(userData._id, id);
   await User.deleteApplyFriend(id, userData._id);
 
-  const updatedUserData = await User.get(userData.id);
+  const updatedUserData = await User.get(userData._id);
   const token = await jwt.sign(updatedUserData, JWT_SECRET);
   return res.status(200).json({ status: 200, message: 'success', data: token });
 }
