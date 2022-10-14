@@ -21,7 +21,7 @@ before((done) => {
       if (err) {
         done(err);
       } else {
-        token = res._body.data;
+        token = res.body.data;
         done();
       }
     });
@@ -32,7 +32,7 @@ describe('GET /user', () => {
     api.get('/user')
       .set('authorization', token)
       .expect(200)
-      .end((err, res) => {
+      .end((err) => {
         if (err) {
           done(err);
         } else {
@@ -44,7 +44,7 @@ describe('GET /user', () => {
   it('Should miss JWT token and return 401', (done) => {
     api.get('/user')
       .expect(401)
-      .end((err, res) => {
+      .end((err) => {
         if (err) {
           done(err);
         } else {
@@ -57,7 +57,7 @@ describe('GET /user', () => {
     api.get('/user')
       .set('authorization', token - 1111)
       .expect(403)
-      .end((err, res) => {
+      .end((err) => {
         if (err) {
           done(err);
         } else {
