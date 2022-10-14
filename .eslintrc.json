@@ -1,0 +1,65 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2021": true,
+        "node": true
+    },
+    "extends": [
+        "plugin:react/recommended",
+        "airbnb"
+    ],
+    "overrides": [
+    ],
+    "parserOptions": {
+        "ecmaVersion": "latest"
+    },
+    "plugins": [
+        "react"
+    ],
+    "rules": {
+        "no-console": "off",
+        "no-restricted-syntax": [
+            "error",
+            {
+                "selector": "CallExpression[callee.object.name='console'][callee.property.name!=/^(log|warn|error|info|trace)$/]",
+                "message": "Unexpected property on console object was called"
+            }
+        ],
+        "prefer-const": [
+            "error",
+            {
+                "destructuring": "any",
+                "ignoreReadBeforeAssign": false
+            }
+        ],
+        "camelcase": [
+            "error",
+            {
+                "ignoreGlobals" : true,
+                "allow": [
+                    "_id",
+                    "updated_dt",
+                    "created_dt",
+                    "like_posts",
+                    "follow_posts",
+                    "author_photo",
+                    "video_url",
+                    "streamer_photo",
+                    "apply_friends",
+                    "pending_friends",
+                    "background_image"
+                ]
+            }
+        ],
+        "no-underscore-dangle": ["error", { "allow": ["_id"] }],
+        "prefer-destructuring": ["error", {"object": true, "array": false}],
+        "react/no-unknown-property": [0, { "ignore": "ignore" }],
+        "react/prop-types": [0,{
+            "forbidDefaultForRequired": true,
+            "classes": "ignore",
+            "functions": "ignore",
+            "ignoreFunctionalComponents": true
+          }]
+    }
+}
