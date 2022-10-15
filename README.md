@@ -1,76 +1,80 @@
+# Wolfon [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)[![AGPL License](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
 
-# Wolfon
-
-Website : https://www.wolfon.live
+[Wolfon Website](https://www.wolfon.live)
 
 A website for **live streaming and learning programs**, combined with a **developer social media**.
 
-## Table of Content
-- [Introduction](#introduction)  
-- [Demo](#demo)  
+## Table of Contents
+- [Introduction](#Introduction)  
+- [System Architecture](#system-architecture)  
+- [Test Account](#test-account)
+- [Demo](#Demo)  
+
     **Live**
-    - [Create Live Stream](#createLive)
-    - [Join Live Stream](#joinLive)
-    - [Review Stream](#reviewLive)
+    - [Create Live Stream](#Create-Live)
+    - [Join Live Stream](#Join-Live)
+    - [Review Stream](#Review-Live)
 
      **Code Editor**
-    - [Select Language](#selectCode)
-    - [Programming](#writeCode)
-    - [Get Code](#getCode)
-    - [Add a Version](#addCode)
-    - [Use Version](#useCode)
+    - [Select Language](#Select-Language)
+    - [Get Viewer Code](#Get-Viewer-Code)
+    - [Add and Use Version](#Add-and-Use-Version)
 
     **Post**
-    - [Create Post](#createPost)
-    - [Join Post](#joinPost)
-    - [Edit Post](#editPost)
-    - [Like and Follow](#likePost)
-- [Features](#features)  
-- [Tech Stack](#techStack)  
-## Badges
+    - [Create Post](#Create-Post)
+    - [Edit Post](#Edit-Post)
+    - [Like and Follow Post](#Like-and-Follow-Post)
+- [Features](#Features)
+- [Tech Stack](#Tech-Stack)
+- [Technical Detail](#Technical0-Detail)
+- [Licence](#License)
+- [Links](#Links)
 
-Add badges from somewhere like: [shields.io](https://shields.io/)
-
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
-[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
-[![AGPL License](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
-
-
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
-
-
-<a name="introduction"></a>
 ## Introduction
-**Test account :**
-- Account_01 (Wolfon): user01@gmail.com / Password: 123456
-- Account_02 (Sam): user02@gmail.com / Password: 123456
 
 **Wolfon** is used for programs online learning, tech sharing and article publishing.
 Provided a low latency live streaming service and interactive online code editor which can execution programs in JavaScript, Python, and Golang.
 
-After learning programs from live stream, there is a social media for user to publich their tech articles and reviews, writing with a rich text editor which support code block, image insertion and link href.<a name="demo"></a>
+After learning programs from live stream, there is a social media for user to publish their tech articles and reviews, writing with a rich text editor which support code block, image insertion and link href.
 
 ## System Architecture
-![架構細節1-1](https://user-images.githubusercontent.com/81073535/195830529-42a86570-194e-4aea-b980-24467b09faac.png)
+![架構細節1-1](https://user-images.githubusercontent.com/81073535/195974725-d3ada339-ad50-415d-9d26-958126fa4bf7.png)
 
+## Test account :
+- Account_01 (Wolfon): user01@gmail.com / Password: 123456
+- Account_02 (Sam): user02@gmail.com / Password: 123456
 ## Demo
+#### Create Live
+![create_live](https://user-images.githubusercontent.com/81073535/195973721-20f8dd9e-d3b8-457e-99e7-036638a96e28.gif)
 
-<a name="createLive"></a>
-Insert gif or link to demo
+#### Join Live
+![join_live](https://user-images.githubusercontent.com/81073535/195973726-deb0214f-e0a1-4889-bf44-ae523b44f545.gif)
 
-<a name="joinLive"></a>
-<a name="reviewLive"></a>
-<a name="selectCode"></a>
-<a name="writeCode"></a>
-<a name="getCode"></a>
-<a name="addCode"></a>
-<a name="useCode"></a>
-<a name="createPost"></a>
-<a name="joinPost"></a>
-<a name="editPost"></a>
-<a name="likePost"></a><a name="features"></a>
+#### End Live
+![end_live](https://user-images.githubusercontent.com/81073535/195973903-ea939606-d964-4ded-b2cc-9ed6e868f9ef.gif)
+
+#### Review Live
+![review_live](https://user-images.githubusercontent.com/81073535/195973734-f60e1a6c-bd38-40ef-92ce-1178638c78b9.gif)
+
+#### Select Language
+![select_language](https://user-images.githubusercontent.com/81073535/195973744-28e16996-2a92-4825-aa4c-8d4b058d293c.gif)
+
+#### Get Viewer Code
+![get_viewer_code](https://user-images.githubusercontent.com/81073535/195974129-84fd8464-2023-438c-8b3c-df8fb02187c5.gif)
+
+#### Add and Use Version
+![add_code](https://user-images.githubusercontent.com/81073535/195973880-3f9443ca-bc2a-4f22-be1a-81f37009e956.gif)
+
+#### Create Post
+![create_post](https://user-images.githubusercontent.com/81073535/195974672-7e05fc2e-056b-4460-81c7-639f9f55e439.gif)
+
+#### Edit Post
+![edit_post](https://user-images.githubusercontent.com/81073535/195973917-e5bec20e-4a44-4a73-bd4b-21bfae25fa1f.gif)
+
+#### Like and Follow Post
+![like_post](https://user-images.githubusercontent.com/81073535/195973899-62d84f96-6e6c-40b9-b8cb-30171c3d5a12.gif)
+
+
 ## Features
 
 **Live Streaming**
@@ -87,7 +91,6 @@ Insert gif or link to demo
 - Get code from viewer's editor with a simple click on button
 
 **Chatroom**
-
 - Many-to-many online chatroom
 - Image upload and preview
 - Zoom in image
@@ -111,21 +114,40 @@ Insert gif or link to demo
 - Browsing personal followed and liked posts
 - Searching post, live, and user with short keyword
 - Change personal avatar and background image in profile
-- Sign-up and sign-in<a name="techStack"></a>
-## Tech Stack
+- Sign-up and sign-in## Tech Stack
 
-**Client:** WebRTC, MediaRecorder, React, MaterialUI, TipTap, React-Ace, Socket.IO
+**Client:** 
+- WebRTC
+- MediaRecorder
+- React
+- MaterialUI
+- TipTap
+- React-Ace
+- Socket.IO
 
-**Server:** Node, Express, Docker, multer, aws-sdk, Socket.IO
+**Server:** 
+- Node
+- Express
+- Nginx
+- Docker
+- Socket.IO
+- multer
+- aws-sdk
 
-**Database:** MongoDB Atlas
+**Database:** 
+- MongoDB Atlas
 
-**Cloud service:** Amazon EC2, Amazon S3, Amazon CloudFront
+**Cloud service:** 
+- Amazon EC2
+- Amazon S3
+- Amazon CloudFront
 
-**Test:** mocha, chai, supertest
+**Test:** 
+- mocha
+- chai
+- supertest
 
-## Developement
-
+## Technical Detail
 **Live Streaming**
 - Built a WebRTC one-to-many live stream service with Socket.IO for SDP and ICE exchange.
 - Using Socket.IO room to separate each live streaming.
@@ -134,18 +156,20 @@ Insert gif or link to demo
 
 **Online Code Editor**
 - Adopted Docker and Dockerfile to create different program language runtime enviroments for program execution.
+- Add code version for viewers to use and catch up the streamer's progress, passing data by Socket.IO.
 - Applied cpu and memory limited on container with Docker for resource limination.
 - Run programs using Node child_process modules and Docker images.
-- Handling the infinite loop case.
-
+- Handling the infinite loop case by execution time limit.
+- Streamer can get each viewer's code from the viewer's editor by a simple click on button using Socket.IO for passing programs.
 
 **Chatroom**
-- Many-to-many online chatroom
+- Many-to-many online chatroom using Socket.IO room.
+- Upload images with Amazon S3 and multer, and access with Amazon CloudFront.
 
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
 
-**Article Publishing**
-- Rich text editor on writing article
-
-
-**Social Media**
-- Friend system
+## Links
+- [Wolfon](https://www.wolfon.live)
+- [How I make Code sandbox](https://medium.com/@Tim_Tsai/docker-%E7%94%A8-dockerfile-%E8%88%87-node-js-%E5%AF%A6%E4%BD%9C%E7%B0%A1%E6%98%93-codesandbox-%E5%BE%8C%E7%AB%AF-3673b7e6ea06)
+- [How I handle infinite loop in Code sandbox](https://medium.com/@Tim_Tsai/docker-%E7%94%A8-dockerfile-%E8%88%87-node-js-%E5%AF%A6%E4%BD%9C%E7%B0%A1%E6%98%93-codesandbox-%E5%BE%8C%E7%AB%AF-part-2-d55c99708eb8)
