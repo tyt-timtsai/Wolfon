@@ -15,14 +15,11 @@ A website for **live streaming and learning programs**, combined with a **develo
 
      **Code Editor**
     - [Select Language](#Select-Language)
-    - [Programming](#Programming)
     - [Get Viewer Code](#Get-Viewer-Code)
-    - [Add Version](#addCode)
-    - [Use Version](#useCode)
+    - [Add and Use Version](#Add-and-Use-Version)
 
     **Post**
     - [Create Post](#Create-Post)
-    - [Browse Post](#Browse-Post)
     - [Edit Post](#Edit-Post)
     - [Like and Follow Post](#Like-and-Follow-Post)
 - [Features](#Features)
@@ -49,21 +46,35 @@ After learning programs from live stream, there is a social media for user to pu
 
 ## Demo
 #### Create Live
-Insert gif or link to demo
+![create_live](https://user-images.githubusercontent.com/81073535/195973721-20f8dd9e-d3b8-457e-99e7-036638a96e28.gif)
 
 #### Join Live
+![join_live](https://user-images.githubusercontent.com/81073535/195973726-deb0214f-e0a1-4889-bf44-ae523b44f545.gif)
+
+#### End Live
+![end_live](https://user-images.githubusercontent.com/81073535/195973903-ea939606-d964-4ded-b2cc-9ed6e868f9ef.gif)
+
 #### Review Live
+![review_live](https://user-images.githubusercontent.com/81073535/195973734-f60e1a6c-bd38-40ef-92ce-1178638c78b9.gif)
 
 #### Select Language
-#### Programming
+![select_language](https://user-images.githubusercontent.com/81073535/195973744-28e16996-2a92-4825-aa4c-8d4b058d293c.gif)
+
 #### Get Viewer Code
-#### Add Version
-#### Use Version
+![get_viewer_code](https://user-images.githubusercontent.com/81073535/195974129-84fd8464-2023-438c-8b3c-df8fb02187c5.gif)
+
+#### Add and Use Version
+![add_code](https://user-images.githubusercontent.com/81073535/195973880-3f9443ca-bc2a-4f22-be1a-81f37009e956.gif)
 
 #### Create Post
-#### Browse Post
+
 #### Edit Post
-#### Like and Follow Post<a name="features"></a>
+![edit_post](https://user-images.githubusercontent.com/81073535/195973917-e5bec20e-4a44-4a73-bd4b-21bfae25fa1f.gif)
+
+#### Like and Follow Post
+![like_post](https://user-images.githubusercontent.com/81073535/195973899-62d84f96-6e6c-40b9-b8cb-30171c3d5a12.gif)
+
+
 ## Features
 
 **Live Streaming**
