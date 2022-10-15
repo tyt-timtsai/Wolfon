@@ -45,9 +45,9 @@ After learning programs from live stream, there is a social media for user to pu
 
 ## System Architecture
 
-![架構細節1-1](https://user-images.githubusercontent.com/81073535/195830529-42a86570-194e-4aea-b980-24467b09faac.png)## Demo
+![架構細節1-1](https://user-images.githubusercontent.com/81073535/195830529-42a86570-194e-4aea-b980-24467b09faac.png)
 
-<a name="createLive"></a>
+## Demo
 #### Create Live
 Insert gif or link to demo
 
