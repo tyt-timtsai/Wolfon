@@ -67,6 +67,7 @@ After learning programs from live stream, there is a social media for user to pu
 ![add_code](https://user-images.githubusercontent.com/81073535/195973880-3f9443ca-bc2a-4f22-be1a-81f37009e956.gif)
 
 #### Create Post
+![create_post](https://user-images.githubusercontent.com/81073535/195974672-7e05fc2e-056b-4460-81c7-639f9f55e439.gif)
 
 #### Edit Post
 ![edit_post](https://user-images.githubusercontent.com/81073535/195973917-e5bec20e-4a44-4a73-bd4b-21bfae25fa1f.gif)
