@@ -6,6 +6,8 @@ A website for **live streaming and learning programs**, combined with a **develo
 
 ## Table of Contents
 - [Introduction](#Introduction)  
+- [System Architecture](#system-architecture)  
+- [Test Account](#test-account)
 - [Demo](#Demo)  
 
     **Live**
@@ -25,24 +27,22 @@ A website for **live streaming and learning programs**, combined with a **develo
 - [Features](#Features)
 - [Tech Stack](#Tech-Stack)
 - [Technical Detail](#Technical0-Detail)
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
-
+- [Licence](#License)
+- [Links](#Links)
 
 ## Introduction
-**Test account :**
-- Account_01 (Wolfon): user01@gmail.com / Password: 123456
-- Account_02 (Sam): user02@gmail.com / Password: 123456
 
 **Wolfon** is used for programs online learning, tech sharing and article publishing.
 Provided a low latency live streaming service and interactive online code editor which can execution programs in JavaScript, Python, and Golang.
 
-After learning programs from live stream, there is a social media for user to publich their tech articles and reviews, writing with a rich text editor which support code block, image insertion and link href.
+After learning programs from live stream, there is a social media for user to publish their tech articles and reviews, writing with a rich text editor which support code block, image insertion and link href.
 
 ## System Architecture
 ![架構細節1-1](https://user-images.githubusercontent.com/81073535/195974725-d3ada339-ad50-415d-9d26-958126fa4bf7.png)
 
+## Test account :
+- Account_01 (Wolfon): user01@gmail.com / Password: 123456
+- Account_02 (Sam): user02@gmail.com / Password: 123456
 ## Demo
 #### Create Live
 ![create_live](https://user-images.githubusercontent.com/81073535/195973721-20f8dd9e-d3b8-457e-99e7-036638a96e28.gif)
@@ -148,3 +148,28 @@ After learning programs from live stream, there is a social media for user to pu
 - supertest
 
 ## Technical Detail
+**Live Streaming**
+- Built a WebRTC one-to-many live stream service with Socket.IO for SDP and ICE exchange.
+- Using Socket.IO room to separate each live streaming.
+- Applied MediaRecorder and design a automatic live stream recording service when stream start.
+- Using Amazon S3 and S3 pre-signed URL to automatically recorded live stream with S3 multipart-upload after stream end.
+
+**Online Code Editor**
+- Adopted Docker and Dockerfile to create different program language runtime enviroments for program execution.
+- Add code version for viewers to use and catch up the streamer's progress, passing data by Socket.IO.
+- Applied cpu and memory limited on container with Docker for resource limination.
+- Run programs using Node child_process modules and Docker images.
+- Handling the infinite loop case by execution time limit.
+- Streamer can get each viewer's code from the viewer's editor by a simple click on button using Socket.IO for passing programs.
+
+**Chatroom**
+- Many-to-many online chatroom using Socket.IO room.
+- Upload images with Amazon S3 and multer, and access with Amazon CloudFront.
+
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
+
+## Links
+- [Wolfon](https://www.wolfon.live)
+- [How I make Code sandbox](https://medium.com/@Tim_Tsai/docker-%E7%94%A8-dockerfile-%E8%88%87-node-js-%E5%AF%A6%E4%BD%9C%E7%B0%A1%E6%98%93-codesandbox-%E5%BE%8C%E7%AB%AF-3673b7e6ea06)
+- [How I handle infinite loop in Code sandbox](https://medium.com/@Tim_Tsai/docker-%E7%94%A8-dockerfile-%E8%88%87-node-js-%E5%AF%A6%E4%BD%9C%E7%B0%A1%E6%98%93-codesandbox-%E5%BE%8C%E7%AB%AF-part-2-d55c99708eb8)
