@@ -41,8 +41,7 @@ Provided a low latency live streaming service and interactive online code editor
 After learning programs from live stream, there is a social media for user to publich their tech articles and reviews, writing with a rich text editor which support code block, image insertion and link href.
 
 ## System Architecture
-
-![架構細節1-1](https://user-images.githubusercontent.com/81073535/195830529-42a86570-194e-4aea-b980-24467b09faac.png)
+![架構細節1-1](https://user-images.githubusercontent.com/81073535/195974725-d3ada339-ad50-415d-9d26-958126fa4bf7.png)
 
 ## Demo
 #### Create Live
