@@ -26,7 +26,7 @@ A website for **live streaming and learning programs**, combined with a **develo
     - [Like and Follow Post](#Like-and-Follow-Post)
 - [Features](#Features)
 - [Tech Stack](#Tech-Stack)
-- [Technical Detail](#Technical0-Detail)
+- [Technical Detail](#Technical-Detail)
 - [Licence](#License)
 - [Links](#Links)
 
@@ -114,8 +114,9 @@ After learning programs from live stream, there is a social media for user to pu
 - Browsing personal followed and liked posts
 - Searching post, live, and user with short keyword
 - Change personal avatar and background image in profile
-- Sign-up and sign-in## Tech Stack
+- Sign-up and sign-in
 
+## Tech Stack
 **Client:** 
 - WebRTC
 - MediaRecorder
