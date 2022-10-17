@@ -46,34 +46,34 @@ After learning programs from live stream, there is a social media for user to pu
 - Account_01 (Wolfon): user01@gmail.com / Password: 123456
 - Account_02 (Sam): user02@gmail.com / Password: 123456
 ## Demo
-#### Create Live
+#### Create Live : Set live title and upload a live cover image.
 ![create_live](https://user-images.githubusercontent.com/81073535/195973721-20f8dd9e-d3b8-457e-99e7-036638a96e28.gif)
 
-#### Join Live
+#### Join Live : Browsing lives and records in home page, live section.
 ![join_live](https://user-images.githubusercontent.com/81073535/195973726-deb0214f-e0a1-4889-bf44-ae523b44f545.gif)
 
-#### End Live
+#### End Live : Click end stream button to automatically upload stream to cloud ( Amazon S3 ).
 ![end_live](https://user-images.githubusercontent.com/81073535/195973903-ea939606-d964-4ded-b2cc-9ed6e868f9ef.gif)
 
-#### Review Live
+#### Review Live : Code versions are still avaliable in live reviews.
 ![review_live](https://user-images.githubusercontent.com/81073535/195973734-f60e1a6c-bd38-40ef-92ce-1178638c78b9.gif)
 
-#### Select Language
+#### Select Language : Multiple languages are supported in code editor.
 ![select_language](https://user-images.githubusercontent.com/81073535/195973744-28e16996-2a92-4825-aa4c-8d4b058d293c.gif)
 
-#### Get Viewer Code
+#### Get Viewer Code : Streamer can get viewer's code by a simple click on button of the viewer.
 ![get_viewer_code](https://user-images.githubusercontent.com/81073535/195974129-84fd8464-2023-438c-8b3c-df8fb02187c5.gif)
 
-#### Add and Use Version
+#### Add and Use Version : Streamer can add version to save the current code on editor, and all viewers will get the new version immediately.
 ![add_code](https://user-images.githubusercontent.com/81073535/195973880-3f9443ca-bc2a-4f22-be1a-81f37009e956.gif)
 
-#### Create Post
+#### Create Post : Able to use markdown language writing articles, inserting images by URL, set links, and preview.
 ![create_post](https://user-images.githubusercontent.com/81073535/195974672-7e05fc2e-056b-4460-81c7-639f9f55e439.gif)
 
-#### Edit Post
+#### Edit Post : Articles are able to edit after published, with a click on edit button in article page.
 ![edit_post](https://user-images.githubusercontent.com/81073535/195973917-e5bec20e-4a44-4a73-bd4b-21bfae25fa1f.gif)
 
-#### Like and Follow Post
+#### Like and Follow Post : A simple click on like and follow icon, you can save the article you like.
 ![like_post](https://user-images.githubusercontent.com/81073535/195973899-62d84f96-6e6c-40b9-b8cb-30171c3d5a12.gif)
 
 
@@ -174,5 +174,5 @@ After learning programs from live stream, there is a social media for user to pu
 
 ## Links
 - [Wolfon](https://www.wolfon.live)
-- [How I make Code sandbox](https://medium.com/@Tim_Tsai/docker-%E7%94%A8-dockerfile-%E8%88%87-node-js-%E5%AF%A6%E4%BD%9C%E7%B0%A1%E6%98%93-codesandbox-%E5%BE%8C%E7%AB%AF-3673b7e6ea06)
-- [How I handle infinite loop in Code sandbox](https://medium.com/@Tim_Tsai/docker-%E7%94%A8-dockerfile-%E8%88%87-node-js-%E5%AF%A6%E4%BD%9C%E7%B0%A1%E6%98%93-codesandbox-%E5%BE%8C%E7%AB%AF-part-2-d55c99708eb8)
+- [How to make Code sandbox](https://medium.com/@Tim_Tsai/docker-%E7%94%A8-dockerfile-%E8%88%87-node-js-%E5%AF%A6%E4%BD%9C%E7%B0%A1%E6%98%93-codesandbox-%E5%BE%8C%E7%AB%AF-3673b7e6ea06)
+- [How to handle infinite loop in Code sandbox](https://medium.com/@Tim_Tsai/docker-%E7%94%A8-dockerfile-%E8%88%87-node-js-%E5%AF%A6%E4%BD%9C%E7%B0%A1%E6%98%93-codesandbox-%E5%BE%8C%E7%AB%AF-part-2-d55c99708eb8)
