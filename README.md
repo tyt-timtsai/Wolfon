@@ -8,10 +8,12 @@ A website for **live streaming and learning programs**, combined with a **develo
 
 ## Table of Contents
 - [Introduction](#Introduction)  
-- [System Architecture](#system-architecture)  
 - [Test Account](#test-account)
+- [Features](#Features)
+- [Tech Stack](#Tech-Stack)
+- [Technical Detail](#Technical-Detail)
+- [System Architecture](#system-architecture)  
 - [Demo](#Demo)  
-
     **Live**
     - [Create Live Stream](#Create-Live)
     - [Join Live Stream](#Join-Live)
@@ -26,67 +28,19 @@ A website for **live streaming and learning programs**, combined with a **develo
     - [Create Post](#Create-Post)
     - [Edit Post](#Edit-Post)
     - [Like and Follow Post](#Like-and-Follow-Post)
-- [Features](#Features)
-- [Tech Stack](#Tech-Stack)
-- [Technical Detail](#Technical-Detail)
 - [Licence](#License)
 - [Links](#Links)
 
 ## Introduction
-[Front-End Repostority](https://github.com/tyt-timtsai/Wolfon-Frontend)
 
 **Wolfon** is used for programs online learning, tech sharing and article publishing.
 Provided a low latency live streaming service and interactive online code editor which can execution programs in JavaScript, Python, and Golang.
 
 After learning programs from live stream, there is a social media for user to publish their tech articles and reviews, writing with a rich text editor which support code block, image insertion and link href.
 
-## System Architecture
-![架構細節1-1](https://user-images.githubusercontent.com/81073535/195974725-d3ada339-ad50-415d-9d26-958126fa4bf7.png)
-
 ## Test account :
 - Account_01 (Wolfon): user01@gmail.com / Password: 123456
 - Account_02 (Sam): user02@gmail.com / Password: 123456
-## Demo
-### Create Live
-- Set live title and upload a live cover image.
-![create_live](https://user-images.githubusercontent.com/81073535/195973721-20f8dd9e-d3b8-457e-99e7-036638a96e28.gif)
-
-### Join Live
-- Browsing lives and records in home page, live section.
-![join_live](https://user-images.githubusercontent.com/81073535/195973726-deb0214f-e0a1-4889-bf44-ae523b44f545.gif)
-
-### End Live
-- Click end stream button to automatically upload stream to cloud ( Amazon S3 ).
-![end_live](https://user-images.githubusercontent.com/81073535/195973903-ea939606-d964-4ded-b2cc-9ed6e868f9ef.gif)
-
-### Review Live
-- Code versions are still avaliable in live reviews.
-![review_live](https://user-images.githubusercontent.com/81073535/195973734-f60e1a6c-bd38-40ef-92ce-1178638c78b9.gif)
-
-### Select Language
-- Multiple languages are supported in code editor.
-![select_language](https://user-images.githubusercontent.com/81073535/195973744-28e16996-2a92-4825-aa4c-8d4b058d293c.gif)
-
-### Get Viewer Code
-- Streamer can get viewer's code by a simple click on button of the viewer.
-![get_viewer_code](https://user-images.githubusercontent.com/81073535/195974129-84fd8464-2023-438c-8b3c-df8fb02187c5.gif)
-
-### Add and Use Version
-- Streamer can add version to save the current code on editor, and all viewers will get the new version immediately.
-![add_code](https://user-images.githubusercontent.com/81073535/195973880-3f9443ca-bc2a-4f22-be1a-81f37009e956.gif)
-
-### Create Post
-- Able to use markdown language writing articles, inserting images by URL, set links, and preview.
-![create_post](https://user-images.githubusercontent.com/81073535/195974672-7e05fc2e-056b-4460-81c7-639f9f55e439.gif)
-
-### Edit Post
-- Articles are able to edit after published, with a click on edit button in article page.
-![edit_post](https://user-images.githubusercontent.com/81073535/195973917-e5bec20e-4a44-4a73-bd4b-21bfae25fa1f.gif)
-
-### Like and Follow Post
-- A simple click on like and follow icon, you can save the article you like.
-![like_post](https://user-images.githubusercontent.com/81073535/195973899-62d84f96-6e6c-40b9-b8cb-30171c3d5a12.gif)
-
 
 ## Features
 
@@ -133,7 +87,7 @@ After learning programs from live stream, there is a social media for user to pu
 **Client:** 
 - WebRTC
 - MediaRecorder
-- React
+- React ( [Front-End Repostority](https://github.com/tyt-timtsai/Wolfon-Frontend) )
 - MaterialUI
 - TipTap
 - React-Ace
@@ -169,9 +123,9 @@ After learning programs from live stream, there is a social media for user to pu
 - Using Amazon S3 and S3 pre-signed URL to automatically recorded live stream with S3 multipart-upload after stream end.
 
 **Online Code Editor**
-- Adopted Docker and Dockerfile to create different program language runtime enviroments for program execution.
+- Adopted Docker and Dockerfile to create different program language runtime enviroments for program execution.( [Tech Blog](https://medium.com/@Tim_Tsai/docker-%E7%94%A8-dockerfile-%E8%88%87-node-js-%E5%AF%A6%E4%BD%9C%E7%B0%A1%E6%98%93-codesandbox-%E5%BE%8C%E7%AB%AF-3673b7e6ea06) )
 - Add code version for viewers to use and catch up the streamer's progress, passing data by Socket.IO.
-- Applied cpu and memory limited on container with Docker for resource limination.
+- Applied cpu and memory limited on container with Docker for resource limination.( [Tech Blog](https://medium.com/@Tim_Tsai/docker-%E7%94%A8-dockerfile-%E8%88%87-node-js-%E5%AF%A6%E4%BD%9C%E7%B0%A1%E6%98%93-codesandbox-%E5%BE%8C%E7%AB%AF-part-2-d55c99708eb8) )
 - Run programs using Node child_process modules and Docker images.
 - Handling the infinite loop case by execution time limit.
 - Streamer can get each viewer's code from the viewer's editor by a simple click on button using Socket.IO for passing programs.
@@ -179,6 +133,49 @@ After learning programs from live stream, there is a social media for user to pu
 **Chatroom**
 - Many-to-many online chatroom using Socket.IO room.
 - Upload images with Amazon S3 and multer, and access with Amazon CloudFront.
+## System Architecture
+![架構細節1-1](https://user-images.githubusercontent.com/81073535/195974725-d3ada339-ad50-415d-9d26-958126fa4bf7.png)
+## Demo
+### Create Live
+- Set live title and upload a live cover image.
+![create_live](https://user-images.githubusercontent.com/81073535/195973721-20f8dd9e-d3b8-457e-99e7-036638a96e28.gif)
+
+### Join Live
+- Browsing lives and records in home page, live section.
+![join_live](https://user-images.githubusercontent.com/81073535/195973726-deb0214f-e0a1-4889-bf44-ae523b44f545.gif)
+
+### End Live
+- Click end stream button to automatically upload stream to cloud ( Amazon S3 ).
+![end_live](https://user-images.githubusercontent.com/81073535/195973903-ea939606-d964-4ded-b2cc-9ed6e868f9ef.gif)
+
+### Review Live
+- Code versions are still avaliable in live reviews.
+![review_live](https://user-images.githubusercontent.com/81073535/195973734-f60e1a6c-bd38-40ef-92ce-1178638c78b9.gif)
+
+### Select Language
+- Multiple languages are supported in code editor.
+![select_language](https://user-images.githubusercontent.com/81073535/195973744-28e16996-2a92-4825-aa4c-8d4b058d293c.gif)
+
+### Get Viewer Code
+- Streamer can get viewer's code by a simple click on button of the viewer.
+![get_viewer_code](https://user-images.githubusercontent.com/81073535/195974129-84fd8464-2023-438c-8b3c-df8fb02187c5.gif)
+
+### Add and Use Version
+- Streamer can add version to save the current code on editor, and all viewers will get the new version immediately.
+![add_code](https://user-images.githubusercontent.com/81073535/195973880-3f9443ca-bc2a-4f22-be1a-81f37009e956.gif)
+
+### Create Post
+- Able to use markdown language writing articles, inserting images by URL, set links, and preview.
+![create_post](https://user-images.githubusercontent.com/81073535/195974672-7e05fc2e-056b-4460-81c7-639f9f55e439.gif)
+
+### Edit Post
+- Articles are able to edit after published, with a click on edit button in article page.
+![edit_post](https://user-images.githubusercontent.com/81073535/195973917-e5bec20e-4a44-4a73-bd4b-21bfae25fa1f.gif)
+
+### Like and Follow Post
+- A simple click on like and follow icon, you can save the article you like.
+![like_post](https://user-images.githubusercontent.com/81073535/195973899-62d84f96-6e6c-40b9-b8cb-30171c3d5a12.gif)
+
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
@@ -187,3 +184,5 @@ After learning programs from live stream, there is a social media for user to pu
 - [Wolfon](https://www.wolfon.live)
 - [How to make Code sandbox](https://medium.com/@Tim_Tsai/docker-%E7%94%A8-dockerfile-%E8%88%87-node-js-%E5%AF%A6%E4%BD%9C%E7%B0%A1%E6%98%93-codesandbox-%E5%BE%8C%E7%AB%AF-3673b7e6ea06)
 - [How to handle infinite loop in Code sandbox](https://medium.com/@Tim_Tsai/docker-%E7%94%A8-dockerfile-%E8%88%87-node-js-%E5%AF%A6%E4%BD%9C%E7%B0%A1%E6%98%93-codesandbox-%E5%BE%8C%E7%AB%AF-part-2-d55c99708eb8)
+- [How to create one-to-many WebRTC boardcast](https://medium.com/@Tim_Tsai/webrtc-one-to-many-live-stream-with-reactjs-and-socket-io-1-getdisplaymedia-getusermedia-43df2116a959)
+- [How to create one-to-many WebRTC boardcast-(2)](https://medium.com/@Tim_Tsai/webrtc-one-to-many-live-stream-with-reactjs-and-socket-io-2-p2p-connection-6c126ea1dc9d)
