@@ -135,47 +135,69 @@ After learning programs from live stream, there is a social media for user to pu
 - Upload images with Amazon S3 and multer, and access with Amazon CloudFront.
 ## System Architecture
 ![架構細節1-1](https://user-images.githubusercontent.com/81073535/195974725-d3ada339-ad50-415d-9d26-958126fa4bf7.png)
+
+
 ## Demo
 ### Create Live
 - Set live title and upload a live cover image.
-![create_live](https://user-images.githubusercontent.com/81073535/195973721-20f8dd9e-d3b8-457e-99e7-036638a96e28.gif)
+- <video src=https://user-images.githubusercontent.com/81073535/196971069-a30caaa4-2fed-433f-b3de-327931d1d3d0.mp4>
+   Sorry, your browser doesn't support embedded videos. ![Video is Here](https://user-images.githubusercontent.com/81073535/196971069-a30caaa4-2fed-433f-b3de-327931d1d3d0.mp4)
+</video>
 
 ### Join Live
 - Browsing lives and records in home page, live section.
-![join_live](https://user-images.githubusercontent.com/81073535/195973726-deb0214f-e0a1-4889-bf44-ae523b44f545.gif)
+- <video src=https://user-images.githubusercontent.com/81073535/196971113-6391dc9f-0acd-445a-82ff-60abcfae7564.mp4>
+   Sorry, your browser doesn't support embedded videos. ![Video is Here](https://user-images.githubusercontent.com/81073535/196971113-6391dc9f-0acd-445a-82ff-60abcfae7564.mp4)
+</video>
 
 ### End Live
 - Click end stream button to automatically upload stream to cloud ( Amazon S3 ).
-![end_live](https://user-images.githubusercontent.com/81073535/195973903-ea939606-d964-4ded-b2cc-9ed6e868f9ef.gif)
+- <video src=https://user-images.githubusercontent.com/81073535/196969398-cc368253-e8ad-4237-bf3d-d7f3e8761c53.mp4>
+   Sorry, your browser doesn't support embedded videos. ![Video is Here](https://user-images.githubusercontent.com/81073535/196969398-cc368253-e8ad-4237-bf3d-d7f3e8761c53.mp4)
+</video>
 
 ### Review Live
 - Code versions are still avaliable in live reviews.
-![review_live](https://user-images.githubusercontent.com/81073535/195973734-f60e1a6c-bd38-40ef-92ce-1178638c78b9.gif)
+- <video src=https://user-images.githubusercontent.com/81073535/196974309-1d29b697-d731-4aa2-8f45-d22e6778e513.mp4>
+   Sorry, your browser doesn't support embedded videos. ![Video is Here](https://user-images.githubusercontent.com/81073535/196974309-1d29b697-d731-4aa2-8f45-d22e6778e513.mp4)
+</video>
 
 ### Select Language
 - Multiple languages are supported in code editor.
-![select_language](https://user-images.githubusercontent.com/81073535/195973744-28e16996-2a92-4825-aa4c-8d4b058d293c.gif)
+- <video src=https://user-images.githubusercontent.com/81073535/196974555-21177b9d-5c15-492d-89c9-6fc174d9eabb.mp4>
+   Sorry, your browser doesn't support embedded videos. ![Video is Here](https://user-images.githubusercontent.com/81073535/196974555-21177b9d-5c15-492d-89c9-6fc174d9eabb.mp4)
+</video>
 
 ### Get Viewer Code
 - Streamer can get viewer's code by a simple click on button of the viewer.
-![get_viewer_code](https://user-images.githubusercontent.com/81073535/195974129-84fd8464-2023-438c-8b3c-df8fb02187c5.gif)
+- <video src=https://user-images.githubusercontent.com/81073535/196969206-d078152d-5467-4e01-80c5-d953b8ec7d72.mp4>
+   Sorry, your browser doesn't support embedded videos. ![Video is Here](https://user-images.githubusercontent.com/81073535/196969206-d078152d-5467-4e01-80c5-d953b8ec7d72.mp4)
+</video>
+
 
 ### Add and Use Version
 - Streamer can add version to save the current code on editor, and all viewers will get the new version immediately.
-![add_code](https://user-images.githubusercontent.com/81073535/195973880-3f9443ca-bc2a-4f22-be1a-81f37009e956.gif)
+- <video src=https://user-images.githubusercontent.com/81073535/196936744-1b4651f2-cecd-4c95-ac98-f0de48d1ca28.mp4>
+   Sorry, your browser doesn't support embedded videos. ![Video is Here](https://user-images.githubusercontent.com/81073535/196936744-1b4651f2-cecd-4c95-ac98-f0de48d1ca28.mp4)
+</video>
 
 ### Create Post
 - Able to use markdown language writing articles, inserting images by URL, set links, and preview.
-![create_post](https://user-images.githubusercontent.com/81073535/195974672-7e05fc2e-056b-4460-81c7-639f9f55e439.gif)
+- <video src=https://user-images.githubusercontent.com/81073535/196979793-4df89a36-5883-4da7-a71c-b0f4ed81e3ad.mp4>
+   Sorry, your browser doesn't support embedded videos. ![Video is Here](https://user-images.githubusercontent.com/81073535/196979793-4df89a36-5883-4da7-a71c-b0f4ed81e3ad.mp4)
+</video>
 
 ### Edit Post
 - Articles are able to edit after published, with a click on edit button in article page.
-![edit_post](https://user-images.githubusercontent.com/81073535/195973917-e5bec20e-4a44-4a73-bd4b-21bfae25fa1f.gif)
+- <video src=https://user-images.githubusercontent.com/81073535/196949954-eb132aad-0440-4b52-a05f-36c39c9a5f10.mp4>
+   Sorry, your browser doesn't support embedded videos. ![Video is Here](https://user-images.githubusercontent.com/81073535/196949954-eb132aad-0440-4b52-a05f-36c39c9a5f10.mp4)
+</video>
 
 ### Like and Follow Post
 - A simple click on like and follow icon, you can save the article you like.
-![like_post](https://user-images.githubusercontent.com/81073535/195973899-62d84f96-6e6c-40b9-b8cb-30171c3d5a12.gif)
-
+- <video src=https://user-images.githubusercontent.com/81073535/196934373-3fff441c-c319-4069-be91-3ec05975d196.mp4>
+   Sorry, your browser doesn't support embedded videos. ![Video is Here](https://user-images.githubusercontent.com/81073535/196934373-3fff441c-c319-4069-be91-3ec05975d196.mp4)
+</video>
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
