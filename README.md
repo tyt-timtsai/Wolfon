@@ -2,8 +2,6 @@
 
 # Wolfon [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)[![AGPL License](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
 
-[Wolfon Website](https://www.wolfon.live)
-
 A website for **live streaming and learning programs**, combined with a **developer social media**.
 
 ## Table of Contents
@@ -13,18 +11,13 @@ A website for **live streaming and learning programs**, combined with a **develo
 - [System Architecture](#system-architecture)  
 - [Features](#Features)
 - [Tech Stack](#Tech-Stack)
-- [Demo](#Demo)  
-    **Live**
+- [Demo](#Demo)
     - [Create Live Stream](#Create-Live)
     - [Join Live Stream](#Join-Live)
     - [Review Stream](#Review-Live)
-
-     **Code Editor**
     - [Select Language](#Select-Language)
     - [Get Viewer Code](#Get-Viewer-Code)
     - [Add and Use Version](#Add-and-Use-Version)
-
-    **Post**
     - [Create Post](#Create-Post)
     - [Edit Post](#Edit-Post)
     - [Like and Follow Post](#Like-and-Follow-Post)
@@ -38,18 +31,43 @@ Provided a low latency live streaming service and interactive online code editor
 
 After learning programs from live stream, there is a social media for user to publish their tech articles and reviews, writing with a rich text editor which support code block, image insertion and link href.
 
+#### Get Start on Wolfon : [Wolfon Website](https://www.wolfon.live)
+
 ## Test account :
-- Account_01 (Wolfon): user01@gmail.com / Password: 123456
-- Account_02 (Sam): user02@gmail.com / Password: 123456
+Welcome to use these accounts to enjoy Wolfon live service.
+- Account_01 (Wolfon): 
+   ```
+   email : user01@gmail.com 
+   password: 123456
+   ```
+- Account_02 (Sam): 
+   ```
+   email : user02@gmail.com 
+   password: 123456
+   ```
 
 ## Technical Detail
-**Live Streaming**
+### Live Streaming
 - Built a WebRTC one-to-many live stream service with Google STUN server, using Socket.IO for accelerating SDP and ICE exchange.
 - Using Socket.IO room to separate live stream rooms, providing media stream correctly to viewers.
 - Applied MediaRecorder to build a automatic live stream recording service when stream start, which will capture screen and camera (depends on streamer's device ) and microphone audio.
 - Using Amazon S3 and S3 pre-signed URL to automatically recorded live stream to S3 bucket after stream end, and applied S3 multipart-upload for large blob files upload.
 
-**Online Code Editor**
+<table style="border-collapse: unset">
+  <tr>
+    <td style="border : none" valign="top">
+      <img alt="WebRTC Connection" src="https://user-images.githubusercontent.com/81073535/198871893-36590269-9c6e-45ee-9686-ba4f3e743219.png"/>
+      <p align=center>WebRTC connection process using Socket.IO</p>
+    </td>
+    <td style="border : none" valign="top">
+       <img alt="Multiparts Upload" src="https://user-images.githubusercontent.com/81073535/198872511-6cd30d67-9698-47a2-8d29-13f912bfb30c.png"/>
+      <p align=center>Multiparts upload video to S3 bucket</p>
+    </td>
+  </tr>
+</table>
+
+
+### Online Code Editor
 - Adopted Docker and Dockerfile to create different program language runtime enviroments for program execution.( [Tech Blog](https://medium.com/@Tim_Tsai/docker-%E7%94%A8-dockerfile-%E8%88%87-node-js-%E5%AF%A6%E4%BD%9C%E7%B0%A1%E6%98%93-codesandbox-%E5%BE%8C%E7%AB%AF-3673b7e6ea06) )
 - Add code version for viewers to use and catch up the streamer's progress, passing data by Socket.IO.
 - Applied cpu and memory limited on container with Docker for resource limination.( [Tech Blog](https://medium.com/@Tim_Tsai/docker-%E7%94%A8-dockerfile-%E8%88%87-node-js-%E5%AF%A6%E4%BD%9C%E7%B0%A1%E6%98%93-codesandbox-%E5%BE%8C%E7%AB%AF-part-2-d55c99708eb8) )
@@ -57,17 +75,38 @@ After learning programs from live stream, there is a social media for user to pu
 - Handling the infinite loop case by execution time limit.
 - Streamer can get each viewer's code from the viewer's editor by a simple click on button using Socket.IO for passing programs.
 
-**Chatroom**
+<table style="border-collapse: unset">
+  <tr>
+    <td style="border : none" valign="top">
+      <img alt="Code Sandbox" src="https://user-images.githubusercontent.com/81073535/198873785-6452f57b-8ba9-4fc8-90ad-ec3bd8dcac77.png"/>
+      <p align=center>Code Sandbox Back-end structure using Docker</p>
+    </td>
+    <td style="border : none" valign="top">
+      <img alt="Get Viewer's Code" src="https://user-images.githubusercontent.com/81073535/198873774-3eea6171-034a-4df0-96fb-b026b335a71e.png"/>
+      <p align=center>How streamer get viewer's code using Socket.IO</p>
+   </td>
+  </tr>
+</table>
+
+### Chatroom
 - Many-to-many online chatroom using Socket.IO room.
 - Upload images with Amazon S3 and multer, and access with Amazon CloudFront.
-- 
+
 ## System Architecture
-![架構細節1-1](https://user-images.githubusercontent.com/81073535/195974725-d3ada339-ad50-415d-9d26-958126fa4bf7.png)
+
+- Serve React build static files with Nginx try_files on EC2
+- DataBase is on MongoDB Atlas cloud service
+- Support 3 languages runtime docker images build from dockerfile
+
+<div align="center">
+<img width="90%" alt="System Architecture" src="https://user-images.githubusercontent.com/81073535/195974725-d3ada339-ad50-415d-9d26-958126fa4bf7.png"/>
+</div>
 
 ## Database Schema
 - Following the rules of MongoDB schema design best practice ([MongoDB best practice](https://www.mongodb.com/developer/products/mongodb/mongodb-schema-design-best-practices/))
-
-![schema](https://user-images.githubusercontent.com/81073535/198871269-5dc03713-781c-43f5-9b8d-9ce3cfaa1da3.png)
+<div align="center">
+<img width="90%" alt="database schema" src="https://user-images.githubusercontent.com/81073535/198871269-5dc03713-781c-43f5-9b8d-9ce3cfaa1da3.png"/>
+</div>
 
 ## Features
 
