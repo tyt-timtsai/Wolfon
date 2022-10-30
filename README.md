@@ -65,7 +65,9 @@ After learning programs from live stream, there is a social media for user to pu
 ![架構細節1-1](https://user-images.githubusercontent.com/81073535/195974725-d3ada339-ad50-415d-9d26-958126fa4bf7.png)
 
 ## Database Schema
-![schema](https://user-images.githubusercontent.com/81073535/198870219-c6b9461b-75f4-4f96-887d-354380ede7fd.png)
+- Following the rules of MongoDB schema design best practice ([MongoDB best practice](https://www.mongodb.com/developer/products/mongodb/mongodb-schema-design-best-practices/))
+
+![schema](https://user-images.githubusercontent.com/81073535/198871269-5dc03713-781c-43f5-9b8d-9ce3cfaa1da3.png)
 
 ## Features
 
@@ -94,10 +96,9 @@ After learning programs from live stream, there is a social media for user to pu
 - Add links href on text
 - Insert images through URL
 - Support draging image to adjust layout
-- Editing after published
 - Like and Follow article
 - Recording post views
-- Delete article
+- CRUD operations ( Create / Read / Update / Delete )
 
 **Social Media**
 - Friend system
