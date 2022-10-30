@@ -60,8 +60,12 @@ After learning programs from live stream, there is a social media for user to pu
 **Chatroom**
 - Many-to-many online chatroom using Socket.IO room.
 - Upload images with Amazon S3 and multer, and access with Amazon CloudFront.
+- 
 ## System Architecture
 ![架構細節1-1](https://user-images.githubusercontent.com/81073535/195974725-d3ada339-ad50-415d-9d26-958126fa4bf7.png)
+
+## Database Schema
+![schema](https://user-images.githubusercontent.com/81073535/198870219-c6b9461b-75f4-4f96-887d-354380ede7fd.png)
 
 ## Features
 
