@@ -9,10 +9,10 @@ A website for **live streaming and learning programs**, combined with a **develo
 ## Table of Contents
 - [Introduction](#Introduction)  
 - [Test Account](#test-account)
-- [Features](#Features)
-- [Tech Stack](#Tech-Stack)
 - [Technical Detail](#Technical-Detail)
 - [System Architecture](#system-architecture)  
+- [Features](#Features)
+- [Tech Stack](#Tech-Stack)
 - [Demo](#Demo)  
     **Live**
     - [Create Live Stream](#Create-Live)
@@ -41,6 +41,27 @@ After learning programs from live stream, there is a social media for user to pu
 ## Test account :
 - Account_01 (Wolfon): user01@gmail.com / Password: 123456
 - Account_02 (Sam): user02@gmail.com / Password: 123456
+
+## Technical Detail
+**Live Streaming**
+- Built a WebRTC one-to-many live stream service with Google STUN server, using Socket.IO for accelerating SDP and ICE exchange.
+- Using Socket.IO room to separate live stream rooms, providing media stream correctly to viewers.
+- Applied MediaRecorder to build a automatic live stream recording service when stream start, which will capture screen and camera (depends on streamer's device ) and microphone audio.
+- Using Amazon S3 and S3 pre-signed URL to automatically recorded live stream to S3 bucket after stream end, and applied S3 multipart-upload for large blob files upload.
+
+**Online Code Editor**
+- Adopted Docker and Dockerfile to create different program language runtime enviroments for program execution.( [Tech Blog](https://medium.com/@Tim_Tsai/docker-%E7%94%A8-dockerfile-%E8%88%87-node-js-%E5%AF%A6%E4%BD%9C%E7%B0%A1%E6%98%93-codesandbox-%E5%BE%8C%E7%AB%AF-3673b7e6ea06) )
+- Add code version for viewers to use and catch up the streamer's progress, passing data by Socket.IO.
+- Applied cpu and memory limited on container with Docker for resource limination.( [Tech Blog](https://medium.com/@Tim_Tsai/docker-%E7%94%A8-dockerfile-%E8%88%87-node-js-%E5%AF%A6%E4%BD%9C%E7%B0%A1%E6%98%93-codesandbox-%E5%BE%8C%E7%AB%AF-part-2-d55c99708eb8) )
+- Run programs using Node child_process modules and Docker images.
+- Handling the infinite loop case by execution time limit.
+- Streamer can get each viewer's code from the viewer's editor by a simple click on button using Socket.IO for passing programs.
+
+**Chatroom**
+- Many-to-many online chatroom using Socket.IO room.
+- Upload images with Amazon S3 and multer, and access with Amazon CloudFront.
+## System Architecture
+![架構細節1-1](https://user-images.githubusercontent.com/81073535/195974725-d3ada339-ad50-415d-9d26-958126fa4bf7.png)
 
 ## Features
 
@@ -84,58 +105,16 @@ After learning programs from live stream, there is a social media for user to pu
 - Sign-up and sign-in
 
 ## Tech Stack
-**Client:** 
-- WebRTC
-- MediaRecorder
-- React ( [Front-End Repostority](https://github.com/tyt-timtsai/Wolfon-Frontend) )
-- MaterialUI
-- TipTap
-- React-Ace
-- Socket.IO
+**Client:**  WebRTC / MediaRecorder / Socket.IO / React / MaterialUI / TipTap / React-Ace
+ ( [Front-End Repostority](https://github.com/tyt-timtsai/Wolfon-Frontend) )
 
-**Server:** 
-- Node
-- Express
-- Nginx
-- Docker
-- Socket.IO
-- multer
-- aws-sdk
+**Server:** Node / Express / Nginx / Docker / Socket.IO / multer
 
-**Database:** 
-- MongoDB Atlas
+**Database:** MongoDB Atlas
 
-**Cloud service:** 
-- Amazon EC2
-- Amazon S3
-- Amazon CloudFront
+**AWS Cloud service:** EC2 / S3 / CloudFront
 
-**Test:** 
-- mocha
-- chai
-- supertest
-
-## Technical Detail
-**Live Streaming**
-- Built a WebRTC one-to-many live stream service with Socket.IO for SDP and ICE exchange.
-- Using Socket.IO room to separate each live streaming.
-- Applied MediaRecorder and design a automatic live stream recording service when stream start.
-- Using Amazon S3 and S3 pre-signed URL to automatically recorded live stream with S3 multipart-upload after stream end.
-
-**Online Code Editor**
-- Adopted Docker and Dockerfile to create different program language runtime enviroments for program execution.( [Tech Blog](https://medium.com/@Tim_Tsai/docker-%E7%94%A8-dockerfile-%E8%88%87-node-js-%E5%AF%A6%E4%BD%9C%E7%B0%A1%E6%98%93-codesandbox-%E5%BE%8C%E7%AB%AF-3673b7e6ea06) )
-- Add code version for viewers to use and catch up the streamer's progress, passing data by Socket.IO.
-- Applied cpu and memory limited on container with Docker for resource limination.( [Tech Blog](https://medium.com/@Tim_Tsai/docker-%E7%94%A8-dockerfile-%E8%88%87-node-js-%E5%AF%A6%E4%BD%9C%E7%B0%A1%E6%98%93-codesandbox-%E5%BE%8C%E7%AB%AF-part-2-d55c99708eb8) )
-- Run programs using Node child_process modules and Docker images.
-- Handling the infinite loop case by execution time limit.
-- Streamer can get each viewer's code from the viewer's editor by a simple click on button using Socket.IO for passing programs.
-
-**Chatroom**
-- Many-to-many online chatroom using Socket.IO room.
-- Upload images with Amazon S3 and multer, and access with Amazon CloudFront.
-## System Architecture
-![架構細節1-1](https://user-images.githubusercontent.com/81073535/195974725-d3ada339-ad50-415d-9d26-958126fa4bf7.png)
-
+**API Test:** mocha / chai / supertest
 
 ## Demo
 ### Create Live
